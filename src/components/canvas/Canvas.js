@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import Polygon from "./utils/Polygon.js"
 import Vertex from "./utils/Vertex.js"
+import Mat3 from "./utils/Mat3.js"
 import "./Canvas.css";
 
 const vertices = [
@@ -14,7 +15,7 @@ const vertices = [
   new Vertex( 1.0,  1.0,  1.0)  // Rear-Top-Right
 ]
 
-const faces = [
+const polygons = [
   new Polygon([vertices[0], vertices[1], vertices[5], vertices[4]]), // Front
   new Polygon([vertices[2], vertices[3], vertices[7], vertices[6]]), // Rear
   new Polygon([vertices[0], vertices[1], vertices[3], vertices[2]]), // Bottom
@@ -28,13 +29,15 @@ const isometric = ({
   gy: (scale, c) => (vertex) => (vertex.y + vertex.z * c - vertex.x * c) * scale,
 });
 
-function drawPolygon(ctx, polygon, fx, fy){
+function drawPolygon(ctx, polygon, matrix, fx, fy){
   ctx.beginPath();
+  let vertex = Vertex.transform(polygon.vertex(0), matrix);
 
   // The -1 is used to flip the y coordinate as y increases as you move down the canvas
-  ctx.moveTo(fx(polygon.vertex(0)), -1 * fy(polygon.vertex(0)));
-  for(let i=0; i<polygon.count(); ++i){
-    ctx.lineTo(fx(polygon.vertex(i)), -1 * fy(polygon.vertex(i)));
+  ctx.moveTo(fx(vertex), -1 * fy(vertex));
+  for(let i=1; i<polygon.count(); ++i){
+    vertex = Vertex.transform(polygon.vertex(i), matrix);
+    ctx.lineTo(fx(vertex), -1 * fy(vertex));
   }
   ctx.closePath();
   ctx.stroke();
@@ -50,18 +53,52 @@ function Canvas(props) {
     const ctx = canvas.current.getContext("2d");
     ctx.translate(width/2, height/2); // 0 should be in the centre
 	  ctx.strokeStyle = "rgb(255, 255, 255)";
+    ctx.clearRect(-width/2, -height/2, width, height);
 
-    const size = height / 2;
+    const size = height / 4;
     const scale = size / 2;
     const angle = Math.PI / 6; // 30 degrees
-    const a = Math.cos(angle);
-    const b = Math.sin(angle);
+    const transform = Mat3.isometric(angle);
 
-    const fx = isometric.gx(scale, a);
-    const fy = isometric.gy(scale, b);
+    const fx = (vertex) => vertex.x * scale;
+    const fy = (vertex) => vertex.y * scale;
 
-    for(let i=0; i<faces.length; ++i){
-      drawPolygon(ctx, faces[i], fx, fy);
+    let cx = 0.001, cy = 0.001;
+  	let lx = null, ly = null;
+  	let x = 0, y = 0;
+
+    let mouseDown = false;
+    canvas.current.onmousedown = (e) => {
+      mouseDown = true;
+    }
+
+    canvas.current.onmousemove = (e) => {
+      if(mouseDown){
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+        const canvasX = canvas.current.offsetLeft;
+    		const canvasY = canvas.current.offsetTop;
+    		const canvasWidth = canvas.current.offsetWidth;
+    		const canvasHeight = canvas.current.offsetHeight;
+    		const px = (mouseX - canvasX) / canvasWidth;
+    		const py = (mouseY - canvasY) / canvasHeight;
+    		if (lx && ly) {
+    			cx = (px - lx);
+    			cy = (py - ly);
+    		}
+    		lx = px;
+    		ly = py;
+      }
+    }
+
+    canvas.current.onmouseup = (e) => {
+      mouseDown = false;
+  		lx = null;
+  		ly = null;
+    }
+    
+    for(let i=0; i<polygons.length; ++i){
+      drawPolygon(ctx, polygons[i], transform, fx, fy);
     }
   }, []);
 
