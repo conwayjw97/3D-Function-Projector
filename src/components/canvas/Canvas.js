@@ -23,6 +23,11 @@ const faces = [
   new Polygon([vertices[1], vertices[3], vertices[7], vertices[5]])  // Right
 ]
 
+const isometric = ({
+  gx: (scale, c) => (vertex) => (vertex.x * c + vertex.z * c) * scale,
+  gy: (scale, c) => (vertex) => (vertex.y + vertex.z * c - vertex.x * c) * scale,
+});
+
 function drawPolygon(ctx, polygon, fx, fy){
   ctx.beginPath();
 
@@ -46,10 +51,14 @@ function Canvas(props) {
     ctx.translate(width/2, height/2); // 0 should be in the centre
 	  ctx.strokeStyle = "rgb(255, 255, 255)";
 
-    const size = width / 2;
+    const size = height / 2;
+    const scale = size / 2;
+    const angle = Math.PI / 6; // 30 degrees
+    const a = Math.cos(angle);
+    const b = Math.sin(angle);
 
-    const fx = (vertex) => vertex.x * size / 2;
-    const fy = (vertex) => vertex.y * size / 2;
+    const fx = isometric.gx(scale, a);
+    const fy = isometric.gy(scale, b);
 
     for(let i=0; i<faces.length; ++i){
       drawPolygon(ctx, faces[i], fx, fy);
