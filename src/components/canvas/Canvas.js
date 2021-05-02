@@ -1,3 +1,5 @@
+// https://observablehq.com/@kelleyvanevert/projection-of-3d-models-using-javascript-and-html5-canvas
+
 import React, { useEffect, useRef } from "react";
 import Polygon from "./utils/Polygon.js"
 import Vertex from "./utils/Vertex.js"
@@ -53,19 +55,31 @@ function Canvas(props) {
     const ctx = canvas.current.getContext("2d");
     ctx.translate(width/2, height/2); // 0 should be in the centre
 	  ctx.strokeStyle = "rgb(255, 255, 255)";
-    ctx.clearRect(-width/2, -height/2, width, height);
 
-    const size = height / 4;
+    const size = height / 2;
     const scale = size / 2;
     const angle = Math.PI / 6; // 30 degrees
-    const transform = Mat3.isometric(angle);
-
-    const fx = (vertex) => vertex.x * scale;
-    const fy = (vertex) => vertex.y * scale;
 
     let cx = 0.001, cy = 0.001;
-  	let lx = null, ly = null;
-  	let x = 0, y = 0;
+    let lx = null, ly = null;
+    let x = 0, y = 0;
+
+    const render = () => {
+      x += cx;
+    	y += cy;
+
+      ctx.clearRect(-width/2, -height/2, width, height);
+      const transform = Mat3.rotationX(-y * 2 * Math.PI).multiply(Mat3.rotationY(x * 2 * Math.PI));
+
+      const fx = (vertex) => vertex.x * scale;
+      const fy = (vertex) => vertex.y * scale;
+
+      for(let i=0; i<polygons.length; ++i){
+        drawPolygon(ctx, polygons[i], transform, fx, fy);
+      }
+    }
+
+    render();
 
     let mouseDown = false;
     canvas.current.onmousedown = (e) => {
@@ -88,6 +102,7 @@ function Canvas(props) {
     		}
     		lx = px;
     		ly = py;
+        render();
       }
     }
 
@@ -95,10 +110,6 @@ function Canvas(props) {
       mouseDown = false;
   		lx = null;
   		ly = null;
-    }
-    
-    for(let i=0; i<polygons.length; ++i){
-      drawPolygon(ctx, polygons[i], transform, fx, fy);
     }
   }, []);
 
