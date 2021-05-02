@@ -26,11 +26,6 @@ const polygons = [
   new Polygon([vertices[1], vertices[3], vertices[7], vertices[5]])  // Right
 ]
 
-const isometric = ({
-  gx: (scale, c) => (vertex) => (vertex.x * c + vertex.z * c) * scale,
-  gy: (scale, c) => (vertex) => (vertex.y + vertex.z * c - vertex.x * c) * scale,
-});
-
 function drawPolygon(ctx, polygon, matrix, fx, fy){
   ctx.beginPath();
   let vertex = Vertex.transform(polygon.vertex(0), matrix);
@@ -69,7 +64,7 @@ function Canvas(props) {
     	y += cy;
 
       ctx.clearRect(-width/2, -height/2, width, height);
-      const transform = Mat3.rotationX(-y * 2 * Math.PI).multiply(Mat3.rotationY(x * 2 * Math.PI));
+      const transform = Mat3.rotationX(-y * 2 * Math.PI).multiply(Mat3.rotationY(-x * 2 * Math.PI));
 
       const fx = (vertex) => vertex.x * scale;
       const fy = (vertex) => vertex.y * scale;
