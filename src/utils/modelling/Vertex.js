@@ -1,4 +1,4 @@
-import Vec3 from "./Vec3.js"
+import Vec3 from "../math/Vec3.js"
 
 // Point in 3D space
 export default class Vertex {

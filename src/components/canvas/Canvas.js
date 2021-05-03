@@ -1,9 +1,12 @@
 // https://observablehq.com/@kelleyvanevert/projection-of-3d-models-using-javascript-and-html5-canvas
+// TODO: Create camera class to encapsulate rotational data?
 
 import React, { useEffect, useRef } from "react";
-import Polygon from "./utils/Polygon.js"
-import Vertex from "./utils/Vertex.js"
-import Mat3 from "./utils/Mat3.js"
+
+import Polygon from "../../utils/modelling/Polygon.js"
+import Vertex from "../../utils/modelling/Vertex.js"
+import Mat3 from "../../utils/math/Mat3.js"
+
 import "./Canvas.css";
 
 const vertices = [
@@ -58,12 +61,12 @@ function Canvas(props) {
     const size = height / 4;    // Size of the cube
     const angle = Math.PI / 6;  // 30 degrees
 
-    let cx = 0.000, cy = 0.000; // Positional movement
-    let lx = null, ly = null;   // Last set position
-    let x = 0, y = 0;           // Current position
+    let cx = 0.000, cy = 0.000; // Rotational movement
+    let lx = null, ly = null;   // Last set rotation position
+    let x = 0, y = 0;           // Current rotation position
 
     const render = () => {
-      // Move canvas contents
+      // Update canvas rotation
       x += cx;
     	y += cy;
 
@@ -71,7 +74,7 @@ function Canvas(props) {
       ctx.clearRect(-width/2, -height/2, width, height);
 
       // Create transformation matrix to determine how the object's coordinates
-      // move to the new rotation
+      // move with respect to the rotation
       const transform = Mat3.rotationX(-y * 2 * Math.PI).multiply(Mat3.rotationY(-x * 2 * Math.PI));
 
       // Canvas positioning functions
@@ -96,18 +99,15 @@ function Canvas(props) {
         // User mouse down coordinates
         const mouseX = e.clientX;
         const mouseY = e.clientY;
-        // Dimensions of the canvas (why the "offset"?)
-    		const canvasWidth = canvas.current.offsetWidth;
-    		const canvasHeight = canvas.current.offsetHeight;
         // New position for canvas contents
-    		const px = mouseX / canvasWidth;
-    		const py = mouseY / canvasHeight;
-        // If last position was set, update movement values
+    		const px = mouseX / width;
+    		const py = mouseY / height;
+        // If last rotational position was set, update rotational movement values
     		if (lx && ly) {
     			cx = (px - lx);
     			cy = (py - ly);
     		}
-        // Update last position to the position observed here
+        // Update last rotational position to the position observed here
     		lx = px;
     		ly = py;
         render();
@@ -116,7 +116,7 @@ function Canvas(props) {
 
     canvas.current.onmouseup = (e) => {
       mouseDown = false;
-      // Nullify last position so next mouse down doesn't update movement values
+      // Nullify last rotational position so next mouse down doesn't update movement values
   		lx = null;
   		ly = null;
     }
