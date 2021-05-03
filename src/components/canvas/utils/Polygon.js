@@ -1,3 +1,4 @@
+// Shape formed by the combination of multiple vertices
 export default class Polygon {
   constructor(vertices){
     this.vertices = vertices;

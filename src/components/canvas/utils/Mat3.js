@@ -1,5 +1,6 @@
 import Vec3 from "./Vec3.js"
 
+// 3D Matrix, represented as a 1D array of integers
 export default class Mat3 {
   constructor(elements){
     if(elements.length !== 9){
@@ -25,6 +26,9 @@ export default class Mat3 {
 
     let elements = [];
 
+    // Matrix-Vector product, does the dot product of the vector with
+    // each row of the matrix, i.e. multiplies each column value of the matrix
+    // by each element of the vector, one element per column
     if(other instanceof Vec3){
       for(let y=0; y<3; ++y){
         let sum = 0;
@@ -36,6 +40,8 @@ export default class Mat3 {
       return new Vec3(elements);
     }
 
+    // Matrix-Matrix product, does the dot product of the rows of the first matrix
+    // with the columns of the second.
     else if(other instanceof Mat3){
       for(let z=0; z<3; ++z){
         for(let y=0; y<3; ++y){
@@ -50,6 +56,8 @@ export default class Mat3 {
     }
   }
 
+  // The constraints imposed by the identity matrix ensure the determinant of a
+  // matrix is 1, corresponding to a right hand frame matrix
   static identity(){
     return new Mat3([
   		1.0, 0.0, 0.0,
@@ -58,6 +66,9 @@ export default class Mat3 {
   	])
   }
 
+  // Rotation matrices for each axis. The rotation matrix is formed by appending
+  // the X, Y, and Z vectors to form each column of the matrix
+  // For more details: https://en.wikipedia.org/wiki/Rotation_matrix#In_three_dimensions
   static rotationX(angle){
     const a = Math.cos(angle);
   	const b = Math.sin(angle);
@@ -67,7 +78,6 @@ export default class Mat3 {
   		0.0,   b,   a,
   	])
   }
-
   static rotationY(angle){
   	const a = Math.cos(angle);
   	const b = Math.sin(angle);
@@ -77,7 +87,6 @@ export default class Mat3 {
   		 -b, 0.0,   a,
   	]);
   }
-
   static rotationZ(angle) {
   	const a = Math.cos(angle);
   	const b = Math.sin(angle);
@@ -88,6 +97,7 @@ export default class Mat3 {
   	])
   }
 
+  // Transformation matrix to isometrically project an object's matrix
   static isometric(angle) {
   	const a = Math.cos(angle);
   	const b = Math.sin(angle);

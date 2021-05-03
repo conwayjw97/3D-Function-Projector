@@ -1,21 +1,17 @@
 import Vec3 from "./Vec3.js"
 
+// Point in 3D space
 export default class Vertex {
   constructor(x, y, z){
     this.x = x;
     this.y = y;
     this.z = z;
+    this.vector = new Vec3([x, y, z]);
   }
 
-  static transform(vertex, matrix){
-    return Vertex.fromVec3(matrix.multiply(Vertex.toVec3(vertex)));
-  }
-
-  static toVec3(vertex){
-    return new Vec3([vertex.x, vertex.y, vertex.z]);
-  }
-
-  static fromVec3(vector){
-    return new Vertex(vector.element(0), vector.element(1), vector.element(2));
+  // Apply a transformation matrix to this vertex's vector
+  transform(matrix){
+    const transformedVector = matrix.multiply(this.vector);
+    return new Vertex(transformedVector.element(0), transformedVector.element(1), transformedVector.element(2));
   }
 }
