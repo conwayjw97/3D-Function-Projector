@@ -12,8 +12,7 @@ function Canvas(props) {
 
   useEffect(() => {
     const ctx = canvas.current.getContext("2d");
-    const drawer = new CanvasDrawer(ctx, width, height, height);
-    drawer.render();
+    const drawer = new CanvasDrawer(ctx, width, height, (height/2)-(height/10), "1-abs(x+y)-abs(y-x)");
 
     let mouseDown = false;
 

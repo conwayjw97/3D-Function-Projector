@@ -1,7 +1,12 @@
+// https://academo.org/demos/3d-surface-plotter/
+
 import Polygon from "../../../utils/modelling/Polygon.js"
 import Vertex from "../../../utils/modelling/Vertex.js"
 import Mat3 from "../../../utils/math/Mat3.js"
 import Vec3 from "../../../utils/math/Vec3.js"
+import {
+  evaluate
+} from 'mathjs'
 
 const white = "rgb(255, 255, 255)";
 const green = "rgb(36, 173, 48)";
@@ -28,12 +33,13 @@ const polygons = [
   new Polygon([vertices[1], vertices[3], vertices[7], vertices[5]]), // Right
 ]
 
-export default class CanvasDrawer {
-  constructor(ctx, width, height, size) {
+export default class CanvasDrawer{
+  constructor(ctx, width, height, size, expression){
     this.ctx = ctx;
     this.width = width;
     this.height = height;
     this.size = size;
+    this.expression = expression;
 
     // Make 0 the centre value of the canvas context
     this.ctx.translate(width/2, height/2);
@@ -49,6 +55,7 @@ export default class CanvasDrawer {
     this.x = 0
     this.y = 0;
 
+    this.evaluateExpression();
     this.render();
   }
 
@@ -71,11 +78,20 @@ export default class CanvasDrawer {
   }
 
   onScroll(delta){
-    this.size -= delta;
+    this.size -= delta/2;
     this.render();
   }
 
-  drawLineBetweenVertices(a, b, matrix) {
+  drawVertex(vertex, matrix){
+    vertex = vertex.transform(matrix);
+
+    this.ctx.fillStyle = white;
+    this.ctx.beginPath();
+    this.ctx.arc(this.fx(vertex), -1 * this.fy(vertex), 1, 0, 2 * Math.PI);
+    this.ctx.fill();
+  };
+
+  drawLineBetweenVertices(a, b, matrix){
     a = a.transform(matrix);
     b = b.transform(matrix);
 
@@ -108,13 +124,34 @@ export default class CanvasDrawer {
   	this.ctx.save();
 
     this.ctx.strokeStyle = red;
-    this.drawLineBetweenVertices(new Vertex(-1.0, 0, 0), new Vertex(1.0, 0, 0), matrix);
+    this.drawLineBetweenVertices(new Vertex(-1.0, -1.0, 1.0), new Vertex(1.0, -1.0, 1.0), matrix);
     this.ctx.strokeStyle = green;
-    this.drawLineBetweenVertices(new Vertex(0, -1.0, 0), new Vertex(0, 1.0, 0), matrix);
+    this.drawLineBetweenVertices(new Vertex(-1.0, -1.0, 1.0), new Vertex(-1.0, 1.0, 1.0), matrix);
     this.ctx.strokeStyle = blue;
-  	this.drawLineBetweenVertices(new Vertex(0, 0, -1.0), new Vertex(0, 0, 1.0), matrix);
+  	this.drawLineBetweenVertices(new Vertex(-1.0, -1.0, -1.0), new Vertex(-1.0, -1.0, 1.0), matrix);
 
   	this.ctx.restore();
+  }
+
+  drawExpression(matrix){
+    for (let vertex of this.expressionVertexes) {
+      this.drawVertex(vertex, matrix);
+    }
+  }
+
+  evaluateExpression(){
+    this.expressionVertexes = [];
+    if(this.expression.includes("x")){
+      for(let x=-1.0; x<1.0; x+=0.025){
+        let xEval = this.expression.replaceAll("x", x);
+        if(xEval.includes("y")){
+          for(let y=-1.0; y<1.0; y+=0.025){
+            let yEval = xEval.replaceAll("y", y);
+            this.expressionVertexes.push(new Vertex(x, evaluate(yEval), y));
+          }
+        }
+      }
+    }
   }
 
   render(){
@@ -134,9 +171,6 @@ export default class CanvasDrawer {
     const transform = Mat3.rotationX(-this.y * 2 * Math.PI).multiply(Mat3.rotationY(-this.x * 2 * Math.PI));
 
     this.drawAxisIndicator(transform);
-
-    // for(let i=0; i<polygons.length; i++){
-    //   drawPolygon(ctx, polygons[i], transform, fx, fy);
-    // }
+    this.drawExpression(transform);
   }
 }
