@@ -49,10 +49,6 @@ export default class CanvasDrawer {
     this.x = 0
     this.y = 0;
 
-    // Canvas positioning functions
-    this.fx = (vertex) => vertex.x * size;
-    this.fy = (vertex) => vertex.y * size;
-
     this.render();
   }
 
@@ -72,6 +68,11 @@ export default class CanvasDrawer {
     // Nullify last rotational position so next mouse down doesn't update movement values
     this.lx = null;
     this.ly = null;
+  }
+
+  onScroll(delta){
+    this.size -= delta;
+    this.render();
   }
 
   drawLineBetweenVertices(a, b, matrix) {
@@ -117,6 +118,10 @@ export default class CanvasDrawer {
   }
 
   render(){
+    // Canvas positioning functions
+    this.fx = (vertex) => vertex.x * this.size;
+    this.fy = (vertex) => vertex.y * this.size;
+
     // Update canvas rotation
     this.x += this.cx;
     this.y += this.cy;

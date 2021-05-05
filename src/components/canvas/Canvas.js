@@ -36,14 +36,7 @@ function Canvas(props) {
     }
 
     canvas.current.onwheel = (e) => {
-      // if (e.deltaY < 0) {
-      //   // Zoom in
-      //   size *= e.deltaY * -2;
-      // }
-      // else {
-      //   // Zoom out
-      //   size /= e.deltaY * 2;
-      // }
+      drawer.onScroll(e.deltaY);
     }
   }, []);
 
