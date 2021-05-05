@@ -6,6 +6,7 @@ import React, { useEffect, useRef } from "react";
 import Polygon from "../../utils/modelling/Polygon.js"
 import Vertex from "../../utils/modelling/Vertex.js"
 import Mat3 from "../../utils/math/Mat3.js"
+import Vec3 from "../../utils/math/Vec3.js"
 
 import "./Canvas.css";
 
@@ -29,6 +30,24 @@ const polygons = [
   new Polygon([vertices[1], vertices[3], vertices[7], vertices[5]]), // Right
 ]
 
+function drawLineFromVectors(ctx, a, b) {
+	ctx.beginPath();
+	ctx.moveTo(a.element(0), -1 * a.element(1));
+	ctx.lineTo(b.element(0), -1 * b.element(1));
+	ctx.stroke();
+};
+
+function drawLineBetweenVertices(ctx, a, b, matrix, fx, fy) {
+  a = a.transform(matrix);
+  b = b.transform(matrix);
+
+  ctx.beginPath();
+  ctx.moveTo(fx(a), -1 * fy(a));
+  ctx.lineTo(fx(b), -1 * fy(b));
+  ctx.closePath();
+  ctx.stroke();
+};
+
 function drawPolygon(ctx, polygon, matrix, fx, fy){
   ctx.beginPath();
 
@@ -47,6 +66,16 @@ function drawPolygon(ctx, polygon, matrix, fx, fy){
   ctx.stroke();
 }
 
+function drawAxisIndicator(ctx, matrix, fx, fy){
+	ctx.save();
+
+  drawLineBetweenVertices(ctx, new Vertex(-1.0, 0, 0), new Vertex(1.0, 0, 0), matrix, fx, fy);
+  drawLineBetweenVertices(ctx, new Vertex(0, -1.0, 0), new Vertex(0, 1.0, 0), matrix, fx, fy);
+	drawLineBetweenVertices(ctx, new Vertex(0, 0, -1.0), new Vertex(0, 0, 1.0), matrix, fx, fy);
+
+	ctx.restore();
+}
+
 function Canvas(props) {
   const canvas = useRef(null);
   const width = window.innerWidth;
@@ -58,9 +87,7 @@ function Canvas(props) {
     ctx.translate(width/2, height/2);
 	  ctx.strokeStyle = "rgb(255, 255, 255)";
 
-    const size = height / 4;    // Size of the cube
-    const angle = Math.PI / 6;  // 30 degrees
-
+    let size = height;          // Size of the contents
     let cx = 0.000, cy = 0.000; // Rotational movement
     let lx = null, ly = null;   // Last set rotation position
     let x = 0, y = 0;           // Current rotation position
@@ -81,9 +108,11 @@ function Canvas(props) {
       const fx = (vertex) => vertex.x * size;
       const fy = (vertex) => vertex.y * size;
 
-      for(let i=0; i<polygons.length; i++){
-        drawPolygon(ctx, polygons[i], transform, fx, fy);
-      }
+      drawAxisIndicator(ctx, transform, fx, fy);
+
+      // for(let i=0; i<polygons.length; i++){
+      //   drawPolygon(ctx, polygons[i], transform, fx, fy);
+      // }
     }
 
     render();
@@ -119,6 +148,17 @@ function Canvas(props) {
       // Nullify last rotational position so next mouse down doesn't update movement values
   		lx = null;
   		ly = null;
+    }
+
+    canvas.current.onwheel = (e) => {
+      // if (e.deltaY < 0) {
+      //   // Zoom in
+      //   size *= e.deltaY * -2;
+      // }
+      // else {
+      //   // Zoom out
+      //   size /= e.deltaY * 2;
+      // }
     }
   }, []);
 

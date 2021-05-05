@@ -66,8 +66,8 @@ export default class Mat3 {
   	])
   }
 
-  // Rotation matrices for each axis. The rotation matrix is formed by appending
-  // the X, Y, and Z vectors to form each column of the matrix
+  // Rotation matrices for each axis. A rotation matrix is formed by merging
+  // X, Y, and Z directional vectors to form each column of the matrix
   // For more details: https://en.wikipedia.org/wiki/Rotation_matrix#In_three_dimensions
   static rotationX(angle){
     const a = Math.cos(angle);
