@@ -1,0 +1,47 @@
+.controls {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  font: 25px Consolas;
+  color: rgb(255, 255, 255);
+}
+
+.expression {
+  position: absolute;
+  left: 30%;
+  right: 30%;
+  bottom: 2%;
+  pointer-events: auto;
+}
+
+input[type=text] {
+  color: rgb(255, 255, 255);
+  background-color: rgb(56, 59, 69);
+  height: 100%;
+  display: inline-block;
+  border: 0;
+  border-radius: 4px;
+  font: 25px Consolas;
+  margin: 0 10px;
+}
+
+input[type=text]:focus{
+    outline: none;
+}
+
+button {
+  transition-duration: 0.3s;
+  color: rgb(255, 255, 255);
+  background-color: rgb(56, 59, 69);
+  font: 25px Consolas;
+  border: 0;
+  border-radius: 4px;
+}
+
+button:hover {
+  background-color: rgb(255, 255, 255);
+  color: rgb(56, 59, 69);
+}
