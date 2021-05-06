@@ -1,5 +1,3 @@
-// https://academo.org/demos/3d-surface-plotter/
-
 import Polygon from "../../../utils/modelling/Polygon.js"
 import Vertex from "../../../utils/modelling/Vertex.js"
 import Mat3 from "../../../utils/math/Mat3.js"
@@ -155,6 +153,9 @@ export default class CanvasDrawer{
   }
 
   render(){
+    // Clear canvas contents
+    this.ctx.clearRect(-this.width/2, -this.height/2, this.width, this.height);
+
     // Canvas positioning functions
     this.fx = (vertex) => vertex.x * this.size;
     this.fy = (vertex) => vertex.y * this.size;
@@ -162,9 +163,6 @@ export default class CanvasDrawer{
     // Update canvas rotation
     this.x += this.cx;
     this.y += this.cy;
-
-    // Clear canvas contents
-    this.ctx.clearRect(-this.width/2, -this.height/2, this.width, this.height);
 
     // Create transformation matrix to determine how the object's coordinates
     // move with respect to the rotation

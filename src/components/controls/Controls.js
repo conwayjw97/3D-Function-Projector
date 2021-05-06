@@ -6,8 +6,8 @@ function Controls(props) {
     <div className="controls">
       <div className="expression">
         <label>Z:</label>
-        <input type="text" id="expression" name="expression" value="1-abs(x+y)-abs(y-x)" />
-        <button>Update</button>
+        <input type="text" id="expression" name="expression" value={props.expression} onChange={props.handleExpressionChange} />
+        <button onClick={props.handleUpdate}>Update</button>
       </div>
     </div>
   );

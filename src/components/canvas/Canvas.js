@@ -1,5 +1,6 @@
 // https://observablehq.com/@kelleyvanevert/projection-of-3d-models-using-javascript-and-html5-canvas
-// TODO: Create camera class to encapsulate rotational data?
+// https://academo.org/demos/3d-surface-plotter/
+// https://www.benjoffe.com/code/tools/functions3d/examples
 
 import React, { useEffect, useRef } from "react";
 import CanvasDrawer from "./utils/CanvasDrawer.js"
@@ -12,6 +13,7 @@ function Canvas(props) {
 
   useEffect(() => {
     const ctx = canvas.current.getContext("2d");
+    console.log(ctx +":"+ width +":"+ height +":"+ ((height/2)-(height/10)) +":"+ "1-abs(x+y)-abs(y-x)");
     const drawer = new CanvasDrawer(ctx, width, height, (height/2)-(height/10), "1-abs(x+y)-abs(y-x)");
 
     let mouseDown = false;
@@ -37,7 +39,7 @@ function Canvas(props) {
     canvas.current.onwheel = (e) => {
       drawer.onScroll(e.deltaY);
     }
-  }, []);
+  }, [width, height]);
 
   return (
     <canvas ref={canvas} width={width} height={height} className="canvas">
