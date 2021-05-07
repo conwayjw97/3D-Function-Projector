@@ -24,7 +24,7 @@ export default class Graphics{
     controls.target = new THREE.Vector3(0, 0, 0);
 
     this.renderAxisIndicators();
-    this.renderExpression("x*x - y*y");
+    this.renderExpression("x^2");
 
     const animate = () => {
     	requestAnimationFrame(animate);
@@ -57,36 +57,53 @@ export default class Graphics{
   }
 
   renderExpression(expression){
+    // Evaluate expression points
     let points = [];
     if(expression.includes("x")){
       for(let x=-100; x<100; x+=1){
         let xEval = expression.replaceAll("x", x);
-        if(xEval.includes("y")){
-          for(let y=-100; y<100; y+=1){
+        for(let y=-100; y<100; y+=1){
+          let zEval;
+          if(xEval.includes("y")){
             let yEval = xEval.replaceAll("y", y);
-            let zEval = evaluate(yEval);
-            if(zEval>=-100 && zEval<=100){
-              points.push(new THREE.Vector3(x, zEval, y));
-            }
+            zEval = evaluate(yEval);
+          }
+          else{
+            zEval = evaluate(xEval);
+          }
+          if(zEval>=-100 && zEval<=100){
+            points.push(new THREE.Vector3(x, zEval, y));
           }
         }
       }
     }
 
+    // Render point planes
+    for(let x=0; x<points.length-201; x+=1){
+      const lineMaterial = new THREE.LineBasicMaterial({color: white});
+      const linePoints = [points[x], points[x+1], points[x+200], points[x+201]];
+      const lineGeometry = new THREE.BufferGeometry().setFromPoints(linePoints);
+      const line = new THREE.Line(lineGeometry, lineMaterial);
+
+      this.scene.add(line);
+
+      // let planePointsA = [points[x], points[x+1], points[x+200]];
+      // let planeGeometryA = new THREE.BufferGeometry().setFromPoints(planePointsA);
+      // planeGeometryA.computeVertexNormals();
+      //
+      // let planePointsB = [points[x+1], points[x+200], points[x+201]];
+      // let planeGeometryB = new THREE.BufferGeometry().setFromPoints(planePointsB);
+      // planeGeometryB.computeVertexNormals();
+      //
+      // const material = new THREE.MeshBasicMaterial( {color: red, side: THREE.DoubleSide} );
+      // this.scene.add(new THREE.Mesh( planeGeometryA, material ));
+      // this.scene.add(new THREE.Mesh( planeGeometryB, material ));
+    }
+
+    // Render points
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
     const material = new THREE.PointCloudMaterial({color: white, size: 0.25});
     const expressionPoints = new THREE.Points(geometry, material);
     this.scene.add(expressionPoints);
-
-    const meshGeometry = new ConvexGeometry(points);
-    const meshMaterial = new THREE.MeshLambertMaterial( {
-					color: 0xffffff,
-					opacity: 0.5,
-					transparent: true
-				} );
-    const mesh = new THREE.Mesh(meshGeometry, meshMaterial);
-		mesh.material.side = THREE.BackSide; // back faces
-		mesh.renderOrder = 1;
-    this.scene.add(mesh);
   }
 }

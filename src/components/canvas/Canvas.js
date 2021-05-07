@@ -2,6 +2,7 @@
 // https://academo.org/demos/3d-surface-plotter/
 // https://www.benjoffe.com/code/tools/functions3d/examples
 // https://threejs.org/docs/index.html#manual/en/introduction/Creating-a-scene
+// https://threejsfundamentals.org/threejs/lessons/threejs-custom-geometry.html
 
 import React, { useEffect, useRef } from "react";
 import Graphics from "./utils/Graphics.js"
