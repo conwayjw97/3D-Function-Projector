@@ -15,7 +15,7 @@ function Canvas(props) {
   const height = window.innerHeight;
 
   useEffect(() => {
-    const graphics = new Graphics(canvas.current, width, height);
+    const graphics = new Graphics(canvas.current, width, height, 10, [-50, 60], [-50, 60]);
 
 
     // const drawer = new CanvasDrawer(ctx, width, height, (height/2)-(height/10), "1-abs(x+y)-abs(y-x)");
