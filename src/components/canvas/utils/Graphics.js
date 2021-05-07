@@ -1,44 +1,80 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
+import { evaluate } from 'mathjs'
+
+const black = "rgb(40, 44, 52)";
+const white = "rgb(255, 255, 255)";
+const green = "rgb(36, 173, 48)";
+const blue = "rgb(43, 125, 207)";
+const red = "rgb(207, 43, 43)";
+
 export default class Graphics{
   constructor(canvas, width, height){
-    const scene = new THREE.Scene();
+    this.scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, width/height, 1, 500);
-    camera.position.set(150, 150, 150);
-    // camera.lookAt(0, 0, 0);
+    camera.position.set(150, 100, 150);
 
     const renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true});
     renderer.setSize(width, height);
-    renderer.setClearColor("rgb(40, 44, 52)");
+    renderer.setClearColor(black);
 
     const controls = new OrbitControls(camera, renderer.domElement);
+    controls.target = new THREE.Vector3(0, 0, 0);
 
-    const xAxisMaterial = new THREE.LineBasicMaterial({color: "rgb(36, 173, 48)"});
-    const xAxisPoints = [new THREE.Vector3(0, 0, 0), new THREE.Vector3(100, 0, 0)];
-    const xAxisGeometry = new THREE.BufferGeometry().setFromPoints(xAxisPoints);
-    const xAxisLine = new THREE.Line(xAxisGeometry, xAxisMaterial);
-
-    const yAxisMaterial = new THREE.LineBasicMaterial({color: "rgb(207, 43, 43)"});
-    const yAxisPoints = [new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 100, 0)];
-    const yAxisGeometry = new THREE.BufferGeometry().setFromPoints(yAxisPoints);
-    const yAxisLine = new THREE.Line(yAxisGeometry, yAxisMaterial);
-
-    const zAxisMaterial = new THREE.LineBasicMaterial({color: "rgb(43, 125, 207)"});
-    const zAxisPoints = [new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 100)];
-    const zAxisGeometry = new THREE.BufferGeometry().setFromPoints(zAxisPoints);
-    const zAxisLine = new THREE.Line(zAxisGeometry, zAxisMaterial);
-
-    scene.add(xAxisLine);
-    scene.add(yAxisLine);
-    scene.add(zAxisLine);
+    this.renderAxisIndicators();
+    this.renderExpression("x*x - y*y");
 
     const animate = () => {
     	requestAnimationFrame(animate);
-    	renderer.render(scene, camera);
+    	renderer.render(this.scene, camera);
       controls.update();
     }
 
     animate();
+  }
+
+  renderAxisIndicators(){
+    const xAxisMaterial = new THREE.LineBasicMaterial({color: green});
+    const xAxisPoints = [new THREE.Vector3(-100, -100, -100), new THREE.Vector3(100, -100, -100)];
+    const xAxisGeometry = new THREE.BufferGeometry().setFromPoints(xAxisPoints);
+    const xAxisLine = new THREE.Line(xAxisGeometry, xAxisMaterial);
+
+    const yAxisMaterial = new THREE.LineBasicMaterial({color: red});
+    const yAxisPoints = [new THREE.Vector3(-100, -100, -100), new THREE.Vector3(-100, 100, -100)];
+    const yAxisGeometry = new THREE.BufferGeometry().setFromPoints(yAxisPoints);
+    const yAxisLine = new THREE.Line(yAxisGeometry, yAxisMaterial);
+
+    const zAxisMaterial = new THREE.LineBasicMaterial({color: blue});
+    const zAxisPoints = [new THREE.Vector3(-100, -100, -100), new THREE.Vector3(-100, -100, 100)];
+    const zAxisGeometry = new THREE.BufferGeometry().setFromPoints(zAxisPoints);
+    const zAxisLine = new THREE.Line(zAxisGeometry, zAxisMaterial);
+
+    this.scene.add(xAxisLine);
+    this.scene.add(yAxisLine);
+    this.scene.add(zAxisLine);
+  }
+
+  renderExpression(expression){
+    let points = [];
+    if(expression.includes("x")){
+      for(let x=-100; x<100; x+=1){
+        let xEval = expression.replaceAll("x", x);
+        if(xEval.includes("y")){
+          for(let y=-100; y<100; y+=1){
+            let yEval = xEval.replaceAll("y", y);
+            let zEval = evaluate(yEval);
+            if(zEval>=-100 && zEval<=100){
+              points.push(new THREE.Vector3(x, zEval, y));
+            }
+          }
+        }
+      }
+    }
+
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const material = new THREE.PointCloudMaterial({color: white, size: 0.25});
+    const expressionPoints = new THREE.Points(geometry, material);
+    this.scene.add(expressionPoints);
   }
 }
