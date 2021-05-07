@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { ConvexGeometry } from "three/examples/jsm/geometries/ConvexGeometry.js";
 
 import { evaluate } from 'mathjs'
 
@@ -76,5 +77,16 @@ export default class Graphics{
     const material = new THREE.PointCloudMaterial({color: white, size: 0.25});
     const expressionPoints = new THREE.Points(geometry, material);
     this.scene.add(expressionPoints);
+
+    const meshGeometry = new ConvexGeometry(points);
+    const meshMaterial = new THREE.MeshLambertMaterial( {
+					color: 0xffffff,
+					opacity: 0.5,
+					transparent: true
+				} );
+    const mesh = new THREE.Mesh(meshGeometry, meshMaterial);
+		mesh.material.side = THREE.BackSide; // back faces
+		mesh.renderOrder = 1;
+    this.scene.add(mesh);
   }
 }
