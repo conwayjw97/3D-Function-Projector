@@ -15,34 +15,7 @@ function Canvas(props) {
   const height = window.innerHeight;
 
   useEffect(() => {
-    const graphics = new Graphics(canvas.current, width, height, "x^2", 1, [-20, 20], [-20, 20], [-20, 20]);
-
-
-    // const drawer = new CanvasDrawer(ctx, width, height, (height/2)-(height/10), "1-abs(x+y)-abs(y-x)");
-
-    // let mouseDown = false;
-    //
-    // canvas.current.onmousedown = (e) => {
-    //   mouseDown = true;
-    // }
-    //
-    // canvas.current.onmousemove = (e) => {
-    //   if(mouseDown){
-    //     // New position for canvas contents
-    // 		const px = e.clientX / width;
-    // 		const py = e.clientY / height;
-    //     drawer.onMouseMove(px, py);
-    //   }
-    // }
-    //
-    // canvas.current.onmouseup = (e) => {
-    //   mouseDown = false;
-    //   drawer.onMouseUp();
-    // }
-    //
-    // canvas.current.onwheel = (e) => {
-    //   drawer.onScroll(e.deltaY);
-    // }
+    const graphics = new Graphics(canvas.current, width, height, "x^2", 1, [-10, 10], [-20, 20], [0, 20]);
   }, [width, height]);
 
   return (

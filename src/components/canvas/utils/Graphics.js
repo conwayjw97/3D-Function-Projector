@@ -2,6 +2,8 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { ConvexGeometry } from "three/examples/jsm/geometries/ConvexGeometry.js";
 
+import SpriteText from 'three-spritetext';
+
 import { evaluate } from 'mathjs'
 
 const black = "rgb(40, 44, 52)";
@@ -19,7 +21,7 @@ export default class Graphics{
     this.zRange = zRange;
 
     this.scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, width/height, 1, 500);
+    const camera = new THREE.PerspectiveCamera(45, width/height, 0.1, 1000);
     camera.position.set(150, 100, 150);
 
     const renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true});
@@ -42,24 +44,30 @@ export default class Graphics{
   }
 
   renderAxisIndicators(){
-    const xAxisMaterial = new THREE.LineBasicMaterial({color: green});
-    const xAxisPoints = [new THREE.Vector3(-100, -100, -100), new THREE.Vector3(100, -100, -100)];
-    const xAxisGeometry = new THREE.BufferGeometry().setFromPoints(xAxisPoints);
-    const xAxisLine = new THREE.Line(xAxisGeometry, xAxisMaterial);
+    this.renderLine(new THREE.Vector3(-100, -100, -100), new THREE.Vector3(100, -100, -100), green);
+    this.renderLine(new THREE.Vector3(-100, -100, -100), new THREE.Vector3(-100, 100, -100), red);
+    this.renderLine(new THREE.Vector3(-100, -100, -100), new THREE.Vector3(-100, -100, 100), blue);
 
-    const yAxisMaterial = new THREE.LineBasicMaterial({color: red});
-    const yAxisPoints = [new THREE.Vector3(-100, -100, -100), new THREE.Vector3(-100, 100, -100)];
-    const yAxisGeometry = new THREE.BufferGeometry().setFromPoints(yAxisPoints);
-    const yAxisLine = new THREE.Line(yAxisGeometry, yAxisMaterial);
+    this.renderText("X", 102.5, -100, -100, green);
+    this.renderText("Y", -100, 102.5, -100, red);
+    this.renderText("Z", -100, -100, 102.5, blue);
+  }
 
-    const zAxisMaterial = new THREE.LineBasicMaterial({color: blue});
-    const zAxisPoints = [new THREE.Vector3(-100, -100, -100), new THREE.Vector3(-100, -100, 100)];
-    const zAxisGeometry = new THREE.BufferGeometry().setFromPoints(zAxisPoints);
-    const zAxisLine = new THREE.Line(zAxisGeometry, zAxisMaterial);
+  renderLine(startVec, endVec, color){
+    const lineMaterial = new THREE.LineBasicMaterial({color: color});
+    const linePoints = [startVec, endVec];
+    const lineGeometry = new THREE.BufferGeometry().setFromPoints(linePoints);
+    const line = new THREE.Line(lineGeometry, lineMaterial);
+    this.scene.add(line);
+  }
 
-    this.scene.add(xAxisLine);
-    this.scene.add(yAxisLine);
-    this.scene.add(zAxisLine);
+  renderText(string, x, y, z, color){
+    const text = new SpriteText(string, 6, color);
+    text.position.x = x;
+    text.position.y = y;
+    text.position.z = z;
+    text.fontFace = "Consolas";
+    this.scene.add(text);
   }
 
   renderExpression(expression){
@@ -76,6 +84,7 @@ export default class Graphics{
   }
 
   evaluateExpression(){
+    // TODO: Does this method even work for negative values??
     const xScale = 100/this.xRange[1];
     const yScale = 100/this.yRange[1];
     const zScale = 100/this.zRange[1];
