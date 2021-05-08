@@ -91,7 +91,7 @@ export default class Graphics{
 
   renderExpression(){
     const expPoints = this.evaluateExpression();
-    // this.renderExpressionDots(expPoints);
+    this.renderExpressionDots(expPoints);
 
     for(let x=0; x<expPoints.length-1; x++){
       for(let y=0; y<expPoints[x].length-1; y++){
@@ -107,11 +107,11 @@ export default class Graphics{
     const yScale = 100/this.yRange[1];
     const zScale = 100/this.zRange[1];
     let expPoints = [];
-    if(this.expression.includes("x")){
-      for(let x=this.xRange[0]; x<this.xRange[1]; x+=this.detail){
+    if(this.expression.includes("x") || this.expression.includes("y")){
+      for(let x=this.xRange[0]; x<=this.xRange[1]; x+=this.detail){
         let xEval = this.expression.replaceAll("x", "("+x+")");
         let yPoints = [];
-        for(let y=this.yRange[0]; y<this.yRange[1]; y+=this.detail){
+        for(let y=this.yRange[0]; y<=this.yRange[1]; y+=this.detail){
           let zEval;
           if(xEval.includes("y")){
             let yEval = xEval.replaceAll("y", "("+y+")");
