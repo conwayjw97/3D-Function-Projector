@@ -15,8 +15,9 @@ function Canvas(props) {
   const height = window.innerHeight;
 
   useEffect(() => {
-    const graphics = new Graphics(canvas.current, width, height, "x", 2, [-100, 100], [-100, 100], [-100, 100]);
-  }, [width, height]);
+    console.log("Loading");
+    const graphics = new Graphics(canvas.current, width, height, props.expression, 10, [-100, 100], [-100, 100], [-100, 100]);
+  }, [props.updateCount]);
 
   return (
     <canvas ref={canvas} width={width} height={height} className="canvas">

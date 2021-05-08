@@ -8,9 +8,18 @@ import { evaluate } from 'mathjs'
 
 const black = "rgb(40, 44, 52)";
 const white = "rgb(255, 255, 255)";
-const green = "rgb(36, 173, 48)";
-const blue = "rgb(43, 125, 207)";
-const red = "rgb(207, 43, 43)";
+const green = "rgb(0, 255, 0)";
+const blue = "rgb(0, 0, 255)";
+const red = "rgb(255, 0, 43)";
+
+const rightBottomBack = new THREE.Vector3(100, -100, -100);
+const leftBottomBack = new THREE.Vector3(-100, -100, -100);
+const leftTopBack = new THREE.Vector3(-100, 100, -100);
+const leftBottomFront = new THREE.Vector3(-100, -100, 100);
+const rightTopBack = new THREE.Vector3(100, 100, -100);
+const leftTopFront = new THREE.Vector3(-100, 100, 100);
+const rightTopFront = new THREE.Vector3(100, 100, 100);
+const rightBottomFront = new THREE.Vector3(100, -100, 100);
 
 export default class Graphics{
   constructor(canvas, width, height, expression, detail, xRange, yRange, zRange){
@@ -44,13 +53,24 @@ export default class Graphics{
   }
 
   renderAxisIndicators(){
-    this.renderLine(new THREE.Vector3(-100, -100, -100), new THREE.Vector3(100, -100, -100), new THREE.LineBasicMaterial({color: green}));
-    this.renderLine(new THREE.Vector3(-100, -100, -100), new THREE.Vector3(-100, 100, -100), new THREE.LineBasicMaterial({color: red}));
-    this.renderLine(new THREE.Vector3(-100, -100, -100), new THREE.Vector3(-100, -100, 100), new THREE.LineBasicMaterial({color: blue}));
+    this.renderLine(leftBottomBack, rightBottomBack, new THREE.LineBasicMaterial({color: green}));
+    this.renderLine(leftBottomBack, leftTopBack, new THREE.LineBasicMaterial({color: red}));
+    this.renderLine(leftBottomBack, leftBottomFront, new THREE.LineBasicMaterial({color: blue}));
 
     this.renderText("X", 102.5, -100, -100, green);
     this.renderText("Z", -100, 102.5, -100, red);
     this.renderText("Y", -100, -100, 102.5, blue);
+
+    this.renderLine(rightBottomBack, rightTopBack, new THREE.LineBasicMaterial({color: white}));
+    this.renderLine(rightTopBack, leftTopBack, new THREE.LineBasicMaterial({color: white}));
+    this.renderLine(leftTopBack, leftTopFront, new THREE.LineBasicMaterial({color: white}));
+    this.renderLine(leftTopFront, leftTopFront, new THREE.LineBasicMaterial({color: white}));
+    this.renderLine(leftTopFront, leftBottomFront, new THREE.LineBasicMaterial({color: white}));
+    this.renderLine(leftTopFront, rightTopFront, new THREE.LineBasicMaterial({color: white}));
+    this.renderLine(leftBottomFront, rightBottomFront, new THREE.LineBasicMaterial({color: white}));
+    this.renderLine(rightBottomFront,  rightTopFront, new THREE.LineBasicMaterial({color: white}));
+    this.renderLine(rightTopFront, rightTopBack, new THREE.LineBasicMaterial({color: white}));
+    this.renderLine(rightBottomFront, rightBottomBack, new THREE.LineBasicMaterial({color: white}));
   }
 
   renderLine(startVec, endVec, material){
@@ -69,13 +89,15 @@ export default class Graphics{
     this.scene.add(text);
   }
 
-  renderExpression(expression){
+  renderExpression(){
     const expPoints = this.evaluateExpression();
     // this.renderExpressionDots(expPoints);
-    for(let x=0; x<expPoints.length-1; x+=1){
-      for(let y=0; y<expPoints[x].length-1; y+=1){
+
+    for(let x=0; x<expPoints.length-1; x++){
+      for(let y=0; y<expPoints[x].length-1; y++){
+        if(expPoints[x+1][y+1] != undefined){
         // this.renderExpressionSquare(expPoints, x, y);
-        this.renderExpressionPlane(expPoints, x, y);
+        this.renderExpressionPlane(expPoints, x, y);}
       }
     }
   }
@@ -133,10 +155,19 @@ export default class Graphics{
     let planePointsB = [expPoints[x][y], expPoints[x][y+1], expPoints[x+1][y+1]];
     let planeGeometryB = new THREE.BufferGeometry().setFromPoints(planePointsB);
     planeGeometryB.computeVertexNormals();
-    const colour = this.getColourForY(expPoints[x][y].y);
+    const colour = this.getColourForVector(expPoints[x][y]);
     const material = new THREE.MeshBasicMaterial( {color: colour, side: THREE.DoubleSide} );
     this.scene.add(new THREE.Mesh(planeGeometryA, material));
     this.scene.add(new THREE.Mesh(planeGeometryB, material));
+  }
+
+  getColourForVector(vector){
+    let red, green, blue;
+    red = green = blue = 0;
+    red = Math.round(Math.abs(vector.z) * (255/100));
+    blue = Math.round(Math.abs(vector.y) * (255/100));
+    green = Math.round(Math.abs(vector.x) * (255/100));
+    return "rgb("+red+","+green+","+blue+")";
   }
 
   getColourForY(y){

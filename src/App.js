@@ -19,6 +19,7 @@ function App() {
   return (
     <div className="App">
       <Canvas
+        expression={expression}
         updateCount={updateCount}
       />
       <Controls
