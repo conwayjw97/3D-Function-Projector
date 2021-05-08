@@ -44,20 +44,19 @@ export default class Graphics{
   }
 
   renderAxisIndicators(){
-    this.renderLine(new THREE.Vector3(-100, -100, -100), new THREE.Vector3(100, -100, -100), green);
-    this.renderLine(new THREE.Vector3(-100, -100, -100), new THREE.Vector3(-100, 100, -100), red);
-    this.renderLine(new THREE.Vector3(-100, -100, -100), new THREE.Vector3(-100, -100, 100), blue);
+    this.renderLine(new THREE.Vector3(-100, -100, -100), new THREE.Vector3(100, -100, -100), new THREE.LineBasicMaterial({color: green}));
+    this.renderLine(new THREE.Vector3(-100, -100, -100), new THREE.Vector3(-100, 100, -100), new THREE.LineBasicMaterial({color: red}));
+    this.renderLine(new THREE.Vector3(-100, -100, -100), new THREE.Vector3(-100, -100, 100), new THREE.LineBasicMaterial({color: blue}));
 
     this.renderText("X", 102.5, -100, -100, green);
     this.renderText("Y", -100, 102.5, -100, red);
     this.renderText("Z", -100, -100, 102.5, blue);
   }
 
-  renderLine(startVec, endVec, color){
-    const lineMaterial = new THREE.LineBasicMaterial({color: color});
+  renderLine(startVec, endVec, material){
     const linePoints = [startVec, endVec];
     const lineGeometry = new THREE.BufferGeometry().setFromPoints(linePoints);
-    const line = new THREE.Line(lineGeometry, lineMaterial);
+    const line = new THREE.Line(lineGeometry, material);
     this.scene.add(line);
   }
 
@@ -71,77 +70,86 @@ export default class Graphics{
   }
 
   renderExpression(expression){
-    const expPoints = this.evaluateExpression();
+    const expValues = this.evaluateExpression();
 
-    this.renderExpressionDots(expPoints);
+    this.renderExpressionDots(expValues);
 
-    for(let x=0; x<expPoints.length-1; x+=1){
-      for(let y=0; y<expPoints[x].length-1; y+=1){
-        this.renderExpressionSquare(expPoints, x, y);
-        this.renderExpressionPlane(expPoints, x, y);
+    const expValueVertices = this.expValuesToVertices(expValues);
+
+    for(let x=0; x<expValues.length-1; x+=1){
+      for(let y=0; y<expValues[x].length-1; y+=1){
+        // this.renderExpressionSquare(expValueVertices, x, y);
+        // this.renderExpressionPlane(expValueVertices, x, y);
       }
     }
   }
 
   evaluateExpression(){
-    // TODO: Does this method even work for negative values??
-    const xScale = 100/this.xRange[1];
-    const yScale = 100/this.yRange[1];
-    const zScale = 100/this.zRange[1];
-    let expPoints = [];
+    let expValues = [];
     if(this.expression.includes("x")){
       for(let x=this.xRange[0]; x<this.xRange[1]; x+=this.detail){
         let xEval = this.expression.replaceAll("x", "("+x+")");
-        let yPoints = [];
+        let yValues = [];
         for(let y=this.yRange[0]; y<this.yRange[1]; y+=this.detail){
-          let zEval;
+          let z;
           if(xEval.includes("y")){
             let yEval = xEval.replaceAll("y", "("+y+")");
-            zEval = evaluate(yEval);
+            z = evaluate(yEval);
           }
           else{
-            zEval = evaluate(xEval);
+            z = evaluate(xEval);
           }
-          if(zEval>=this.zRange[0] && zEval<=this.zRange[1]){
-            yPoints.push(new THREE.Vector3(x*xScale, zEval*zScale, y*yScale));
+          if(z>=this.zRange[0] && z<=this.zRange[1]){
+            yValues.push([x, z, y]);
           }
         }
-        if(yPoints.length > 0){
-          expPoints.push(yPoints);
+        if(yValues.length > 0){
+          expValues.push(yValues);
         }
       }
     }
-    return expPoints;
+    return expValues;
   }
 
-  renderExpressionDots(expPoints){
-    const points = [].concat.apply([], expPoints);
-    const geometry = new THREE.BufferGeometry().setFromPoints(points);
-    const material = new THREE.PointCloudMaterial({color: white, size: 0.25});
-    const expressionPoints = new THREE.Points(geometry, material);
-    this.scene.add(expressionPoints);
+  expValuesToVertices(expValues){
+    const expValueVertices = [];
+    for(let x=0; x<expValues.length; x+=1){
+      let expValueYVertices = [];
+      for(let y=0; y<expValues[x].length; y+=1){
+        expValueYVertices.push(new THREE.Vector3(expValues[x][y][0], expValues[x][y][1], expValues[x][y][2]));
+      }
+      expValueVertices.push(expValueYVertices);
+    }
+    return expValueVertices;
   }
 
-  renderExpressionSquare(expPoints, x, y){
+  renderExpressionDots(expValues){
+    const flattenedExpValues = expValues.flat(2);
+    const material = new THREE.PointsMaterial({color: white, size: 0.25});
+    const geometry = new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(flattenedExpValues, 3));
+    const expressionDots = new THREE.Points(geometry, material);
+    this.scene.add(expressionDots);
+  }
+
+  renderExpressionSquare(expValueVertices, x, y){
     const lineMaterial = new THREE.LineBasicMaterial({color: white});
-    const linePoints = [expPoints[x][y], expPoints[x+1][y], expPoints[x+1][y+1], expPoints[x][y+1], expPoints[x][y]];
-    const lineGeometry = new THREE.BufferGeometry().setFromPoints(linePoints);
-    const line = new THREE.Line(lineGeometry, lineMaterial);
-
-    this.scene.add(line);
+    this.renderLine(expValueVertices[x][y], expValueVertices[x+1][y], lineMaterial);
+    this.renderLine(expValueVertices[x+1][y], expValueVertices[x+1][y+1], lineMaterial);
+    this.renderLine(expValueVertices[x+1][y+1], expValueVertices[x][y+1], lineMaterial);
+    this.renderLine(expValueVertices[x][y+1], expValueVertices[x][y], lineMaterial);
   }
 
-  renderExpressionPlane(expPoints, x, y){
-    let planePointsA = [expPoints[x][y], expPoints[x+1][y], expPoints[x+1][y+1]];
+  renderExpressionPlane(expValueVertices, x, y){
+    let planePointsA = [expValueVertices[x][y], expValueVertices[x+1][y], expValueVertices[x+1][y+1]];
     let planeGeometryA = new THREE.BufferGeometry().setFromPoints(planePointsA);
     planeGeometryA.computeVertexNormals();
 
-    let planePointsB = [expPoints[x][y], expPoints[x][y+1], expPoints[x+1][y+1]];
+    let planePointsB = [expValueVertices[x][y], expValueVertices[x][y+1], expValueVertices[x+1][y+1]];
     let planeGeometryB = new THREE.BufferGeometry().setFromPoints(planePointsB);
     planeGeometryB.computeVertexNormals();
 
     const material = new THREE.MeshBasicMaterial( {color: red, side: THREE.DoubleSide} );
-    this.scene.add(new THREE.Mesh( planeGeometryA, material ));
-    this.scene.add(new THREE.Mesh( planeGeometryB, material ));
+    this.scene.add(new THREE.Mesh(planeGeometryA, material));
+    this.scene.add(new THREE.Mesh(planeGeometryB, material));
   }
 }
