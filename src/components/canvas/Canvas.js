@@ -16,7 +16,7 @@ function Canvas(props) {
 
   useEffect(() => {
     console.log("Loading");
-    const graphics = new Graphics(canvas.current, width, height, props.expression, 10, [-100, 100], [-100, 100], [-100, 100]);
+    const graphics = new Graphics(canvas.current, width, height, props.expression, props.detail, [-100, 100], [-100, 100], [-100, 100]);
   }, [props.updateCount]);
 
   return (

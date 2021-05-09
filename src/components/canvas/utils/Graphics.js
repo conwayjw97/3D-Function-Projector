@@ -93,11 +93,11 @@ export default class Graphics{
     const expPoints = this.evaluateExpression();
     this.renderExpressionDots(expPoints);
 
-    for(let x=0; x<expPoints.length-1; x++){
-      for(let y=0; y<expPoints[x].length-1; y++){
-        if(expPoints[x+1][y+1] != undefined){
+    for(let x=0; x<expPoints.length; x++){
+      for(let y=0; y<expPoints[x].length; y++){
+        // this.renderText(x + ":" + y, expPoints[x][y].x, expPoints[x][y].y, expPoints[x][y].z, white);
         // this.renderExpressionSquare(expPoints, x, y);
-        this.renderExpressionPlane(expPoints, x, y);}
+        this.renderExpressionPlane(expPoints, x, y);
       }
     }
   }
@@ -149,16 +149,31 @@ export default class Graphics{
   }
 
   renderExpressionPlane(expPoints, x, y){
-    let planePointsA = [expPoints[x][y], expPoints[x+1][y], expPoints[x+1][y+1]];
-    let planeGeometryA = new THREE.BufferGeometry().setFromPoints(planePointsA);
-    planeGeometryA.computeVertexNormals();
-    let planePointsB = [expPoints[x][y], expPoints[x][y+1], expPoints[x+1][y+1]];
-    let planeGeometryB = new THREE.BufferGeometry().setFromPoints(planePointsB);
-    planeGeometryB.computeVertexNormals();
-    const colour = this.getColourForVector(expPoints[x][y]);
-    const material = new THREE.MeshBasicMaterial( {color: colour, side: THREE.DoubleSide} );
-    this.scene.add(new THREE.Mesh(planeGeometryA, material));
-    this.scene.add(new THREE.Mesh(planeGeometryB, material));
+    if(expPoints[x+1] != undefined){
+      const colour = this.getColourForVector(expPoints[x][y]);
+      const material = new THREE.MeshBasicMaterial({color: colour, side: THREE.DoubleSide});
+      let needsDownfacingTriangle = true;
+      if(expPoints[x+1][y] != undefined && expPoints[x+1][y+1] != undefined){
+        needsDownfacingTriangle = false;
+        const planePointsA = [expPoints[x][y], expPoints[x+1][y], expPoints[x+1][y+1]];
+        const planeGeometryA = new THREE.BufferGeometry().setFromPoints(planePointsA);
+        planeGeometryA.computeVertexNormals();
+        this.scene.add(new THREE.Mesh(planeGeometryA, material));
+      }
+      if(expPoints[x][y+1] != undefined && expPoints[x+1][y+1] != undefined){
+        needsDownfacingTriangle = false;
+        const planePointsB = [expPoints[x][y], expPoints[x][y+1], expPoints[x+1][y+1]];
+        const planeGeometryB = new THREE.BufferGeometry().setFromPoints(planePointsB);
+        planeGeometryB.computeVertexNormals();
+        this.scene.add(new THREE.Mesh(planeGeometryB, material));
+      }
+      if(needsDownfacingTriangle && expPoints[x][y+1] != undefined && expPoints[x+1][y] != undefined){
+        const planePoints = [expPoints[x][y], expPoints[x][y+1], expPoints[x+1][y]];
+        const planeGeometry = new THREE.BufferGeometry().setFromPoints(planePoints);
+        planeGeometry.computeVertexNormals();
+        this.scene.add(new THREE.Mesh(planeGeometry, material));
+      }
+    }
   }
 
   getColourForVector(vector){
