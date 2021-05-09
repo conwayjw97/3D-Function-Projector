@@ -96,15 +96,15 @@ export default class Graphics{
   }
 
   renderExpression(){
-    const expPoints = this.evaluateExpression();
     this.expressionGroup = new THREE.Group();
+    const expPoints = this.evaluateExpression();
 
     this.expressionGroup = this.createExpressionDots(this.expressionGroup, expPoints);
     for(let x=0; x<expPoints.length; x++){
       for(let y=0; y<expPoints[x].length; y++){
         // this.renderText(x + ":" + y, expPoints[x][y].x, expPoints[x][y].y, expPoints[x][y].z, white);
         this.expressionGroup = this.createExpressionSquare(this.expressionGroup, expPoints, x, y);
-        this.expressionGroup = this.createExpressionPlane(this.expressionGroup, expPoints, x, y);
+        // this.expressionGroup = this.createExpressionPlane(this.expressionGroup, expPoints, x, y);
       }
     }
 
@@ -112,9 +112,6 @@ export default class Graphics{
   }
 
   evaluateExpression(){
-    const xScale = 100/this.xRange[1];
-    const yScale = 100/this.yRange[1];
-    const zScale = 100/this.zRange[1];
     let expPoints = [];
     if(this.expression.includes("x") || this.expression.includes("y")){
       for(let x=this.xRange[0]; x<=this.xRange[1]; x+=this.detail){
@@ -130,7 +127,7 @@ export default class Graphics{
             zEval = evaluate(xEval);
           }
           if(zEval>=this.zRange[0] && zEval<=this.zRange[1]){
-            yPoints.push(new THREE.Vector3(x*xScale, zEval*zScale, y*yScale));
+            yPoints.push(new THREE.Vector3(x, zEval, y));
           }
         }
         if(yPoints.length > 0){
@@ -150,13 +147,31 @@ export default class Graphics{
     return group;
   }
 
+  // TODO: There must be a neater way to code this, these two functions below are HORRIFYING
   createExpressionSquare(group, expPoints, x, y){
-    if(expPoints[x+1] != undefined && expPoints[x+1][y+1] != undefined && expPoints[x][y+1] != undefined){
+    if(expPoints[x+1] != undefined){
+      let needsClosingDiagonalLine = true;
       const lineMaterial = new THREE.LineBasicMaterial({color: white});
-      const linePoints = [expPoints[x][y], expPoints[x+1][y], expPoints[x+1][y+1], expPoints[x][y+1], expPoints[x][y]];
-      const lineGeometry = new THREE.BufferGeometry().setFromPoints(linePoints);
-      const line = new THREE.Line(lineGeometry, lineMaterial);
-      group.add(line);
+      if(expPoints[x+1][y] != undefined && expPoints[x+1][y] != undefined && expPoints[x+1][y+1] != undefined && expPoints[x][y+1] != undefined){
+        needsClosingDiagonalLine = false;
+        const linePoints = [expPoints[x][y], expPoints[x+1][y], expPoints[x+1][y+1], expPoints[x][y+1], expPoints[x][y]];
+        const lineGeometry = new THREE.BufferGeometry().setFromPoints(linePoints);
+        const line = new THREE.Line(lineGeometry, lineMaterial);
+        group.add(line);
+      }
+      else if(expPoints[x+1][y] != undefined && expPoints[x+1][y+1] != undefined){
+        needsClosingDiagonalLine = false;
+        const linePoints = [expPoints[x][y], expPoints[x+1][y], expPoints[x+1][y+1], expPoints[x][y]];
+        const lineGeometry = new THREE.BufferGeometry().setFromPoints(linePoints);
+        const line = new THREE.Line(lineGeometry, lineMaterial);
+        group.add(line);
+      }
+      else if(needsClosingDiagonalLine && expPoints[x][y+1] != undefined && expPoints[x+1][y] != undefined){
+        const linePoints = [expPoints[x][y], expPoints[x][y+1], expPoints[x+1][y]];
+        const lineGeometry = new THREE.BufferGeometry().setFromPoints(linePoints);
+        const line = new THREE.Line(lineGeometry, lineMaterial);
+        group.add(line);
+      }
     }
     return group;
   }
