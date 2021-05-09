@@ -104,7 +104,7 @@ export default class Graphics{
       for(let y=0; y<expPoints[x].length; y++){
         // this.renderText(x + ":" + y, expPoints[x][y].x, expPoints[x][y].y, expPoints[x][y].z, white);
         this.expressionGroup = this.createExpressionSquare(this.expressionGroup, expPoints, x, y);
-        // this.expressionGroup = this.createExpressionPlane(this.expressionGroup, expPoints, x, y);
+        this.expressionGroup = this.createExpressionPlane(this.expressionGroup, expPoints, x, y);
       }
     }
 
@@ -147,61 +147,68 @@ export default class Graphics{
     return group;
   }
 
-  // TODO: There must be a neater way to code this, these two functions below are HORRIFYING
   createExpressionSquare(group, expPoints, x, y){
-    if(expPoints[x+1] != undefined){
-      let needsClosingDiagonalLine = true;
-      const lineMaterial = new THREE.LineBasicMaterial({color: white});
-      if(expPoints[x+1][y] != undefined && expPoints[x+1][y] != undefined && expPoints[x+1][y+1] != undefined && expPoints[x][y+1] != undefined){
-        needsClosingDiagonalLine = false;
-        const linePoints = [expPoints[x][y], expPoints[x+1][y], expPoints[x+1][y+1], expPoints[x][y+1], expPoints[x][y]];
-        const lineGeometry = new THREE.BufferGeometry().setFromPoints(linePoints);
-        const line = new THREE.Line(lineGeometry, lineMaterial);
-        group.add(line);
+    const isValidPoint = expPoints[x+1] != undefined;
+
+    if(isValidPoint){
+      const material = new THREE.LineBasicMaterial({color: white});
+
+      const isWholeSquare = expPoints[x+1][y] != undefined && expPoints[x+1][y] != undefined && expPoints[x+1][y+1] != undefined && expPoints[x][y+1] != undefined;
+      const isClosingTriangle = expPoints[x+1][y] != undefined && expPoints[x+1][y+1] != undefined;
+      const isClosingLine = expPoints[x][y+1] != undefined && expPoints[x+1][y] != undefined;
+
+      let points = null;
+      if(isWholeSquare){
+        points = [expPoints[x][y], expPoints[x+1][y], expPoints[x+1][y+1], expPoints[x][y+1], expPoints[x][y]];
       }
-      else if(expPoints[x+1][y] != undefined && expPoints[x+1][y+1] != undefined){
-        needsClosingDiagonalLine = false;
-        const linePoints = [expPoints[x][y], expPoints[x+1][y], expPoints[x+1][y+1], expPoints[x][y]];
-        const lineGeometry = new THREE.BufferGeometry().setFromPoints(linePoints);
-        const line = new THREE.Line(lineGeometry, lineMaterial);
-        group.add(line);
+      else if(isClosingTriangle){
+        points = [expPoints[x][y], expPoints[x+1][y], expPoints[x+1][y+1], expPoints[x][y]];
       }
-      else if(needsClosingDiagonalLine && expPoints[x][y+1] != undefined && expPoints[x+1][y] != undefined){
-        const linePoints = [expPoints[x][y], expPoints[x][y+1], expPoints[x+1][y]];
-        const lineGeometry = new THREE.BufferGeometry().setFromPoints(linePoints);
-        const line = new THREE.Line(lineGeometry, lineMaterial);
+      else if(isClosingLine){
+        points = [expPoints[x][y], expPoints[x][y+1], expPoints[x+1][y]];
+      }
+
+      if(points != null){
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        const line = new THREE.Line(geometry, material);
         group.add(line);
       }
     }
+
     return group;
   }
 
   createExpressionPlane(group, expPoints, x, y){
-    if(expPoints[x+1] != undefined){
+    const isValidPoint = expPoints[x+1] != undefined;
+
+    if(isValidPoint){
       const colour = this.getColourForVector(expPoints[x][y]);
       const material = new THREE.MeshBasicMaterial({color: colour, side: THREE.DoubleSide});
-      let needsDownfacingTriangle = true;
-      if(expPoints[x+1][y] != undefined && expPoints[x+1][y+1] != undefined){
-        needsDownfacingTriangle = false;
+
+      const firstTriangleValid = expPoints[x+1][y] != undefined && expPoints[x+1][y+1] != undefined;
+      const secondTriangleValid = expPoints[x][y+1] != undefined && expPoints[x+1][y+1] != undefined;
+      const downardsTriangleValid = expPoints[x][y+1] != undefined && expPoints[x+1][y] != undefined;
+
+      let downardsTriangleNeeded = true;
+      if(firstTriangleValid){
+        downardsTriangleNeeded = false;
         const planePointsA = [expPoints[x][y], expPoints[x+1][y], expPoints[x+1][y+1]];
         const planeGeometryA = new THREE.BufferGeometry().setFromPoints(planePointsA);
-        planeGeometryA.computeVertexNormals();
         group.add(new THREE.Mesh(planeGeometryA, material));
       }
-      if(expPoints[x][y+1] != undefined && expPoints[x+1][y+1] != undefined){
-        needsDownfacingTriangle = false;
+      if(secondTriangleValid){
+        downardsTriangleNeeded = false;
         const planePointsB = [expPoints[x][y], expPoints[x][y+1], expPoints[x+1][y+1]];
         const planeGeometryB = new THREE.BufferGeometry().setFromPoints(planePointsB);
-        planeGeometryB.computeVertexNormals();
         group.add(new THREE.Mesh(planeGeometryB, material));
       }
-      if(needsDownfacingTriangle && expPoints[x][y+1] != undefined && expPoints[x+1][y] != undefined){
+      if(downardsTriangleNeeded && downardsTriangleValid){
         const planePoints = [expPoints[x][y], expPoints[x][y+1], expPoints[x+1][y]];
         const planeGeometry = new THREE.BufferGeometry().setFromPoints(planePoints);
-        planeGeometry.computeVertexNormals();
         group.add(new THREE.Mesh(planeGeometry, material));
       }
     }
+
     return group;
   }
 
