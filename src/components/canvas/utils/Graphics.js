@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { ConvexGeometry } from "three/examples/jsm/geometries/ConvexGeometry.js";
 
 import SpriteText from 'three-spritetext';
 
@@ -148,14 +147,14 @@ export default class Graphics{
   }
 
   createExpressionSquare(group, expPoints, x, y){
-    const isValidPoint = expPoints[x+1] != undefined;
+    const isValidPoint = expPoints[x+1] !== undefined;
 
     if(isValidPoint){
       const material = new THREE.LineBasicMaterial({color: white});
 
-      const isWholeSquare = expPoints[x+1][y] != undefined && expPoints[x+1][y] != undefined && expPoints[x+1][y+1] != undefined && expPoints[x][y+1] != undefined;
-      const isClosingTriangle = expPoints[x+1][y] != undefined && expPoints[x+1][y+1] != undefined;
-      const isClosingLine = expPoints[x][y+1] != undefined && expPoints[x+1][y] != undefined;
+      const isWholeSquare = expPoints[x+1][y] !== undefined && expPoints[x+1][y] !== undefined && expPoints[x+1][y+1] !== undefined && expPoints[x][y+1] !== undefined;
+      const isClosingTriangle = expPoints[x+1][y] !== undefined && expPoints[x+1][y+1] !== undefined;
+      const isClosingLine = expPoints[x][y+1] !== undefined && expPoints[x+1][y] !== undefined;
 
       let points = null;
       if(isWholeSquare){
@@ -168,7 +167,7 @@ export default class Graphics{
         points = [expPoints[x][y], expPoints[x][y+1], expPoints[x+1][y]];
       }
 
-      if(points != null){
+      if(points !== null){
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
         const line = new THREE.Line(geometry, material);
         group.add(line);
@@ -179,15 +178,15 @@ export default class Graphics{
   }
 
   createExpressionPlane(group, expPoints, x, y){
-    const isValidPoint = expPoints[x+1] != undefined;
+    const isValidPoint = expPoints[x+1] !== undefined;
 
     if(isValidPoint){
       const colour = this.getColourForVector(expPoints[x][y]);
       const material = new THREE.MeshBasicMaterial({color: colour, side: THREE.DoubleSide});
 
-      const firstTriangleValid = expPoints[x+1][y] != undefined && expPoints[x+1][y+1] != undefined;
-      const secondTriangleValid = expPoints[x][y+1] != undefined && expPoints[x+1][y+1] != undefined;
-      const downardsTriangleValid = expPoints[x][y+1] != undefined && expPoints[x+1][y] != undefined;
+      const firstTriangleValid = expPoints[x+1][y] !== undefined && expPoints[x+1][y+1] !== undefined;
+      const secondTriangleValid = expPoints[x][y+1] !== undefined && expPoints[x+1][y+1] !== undefined;
+      const downardsTriangleValid = expPoints[x][y+1] !== undefined && expPoints[x+1][y] !== undefined;
 
       let downardsTriangleNeeded = true;
       if(firstTriangleValid){
