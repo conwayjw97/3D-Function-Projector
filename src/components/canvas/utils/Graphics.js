@@ -52,6 +52,10 @@ export default class Graphics{
     animate();
   }
 
+  update(){
+    this.renderExpression();
+  }
+
   renderAxisIndicators(){
     this.renderLine(leftBottomBack, rightBottomBack, new THREE.LineBasicMaterial({color: green}));
     this.renderLine(leftBottomBack, leftTopBack, new THREE.LineBasicMaterial({color: red}));
@@ -96,7 +100,7 @@ export default class Graphics{
     for(let x=0; x<expPoints.length; x++){
       for(let y=0; y<expPoints[x].length; y++){
         // this.renderText(x + ":" + y, expPoints[x][y].x, expPoints[x][y].y, expPoints[x][y].z, white);
-        // this.renderExpressionSquare(expPoints, x, y);
+        this.renderExpressionSquare(expPoints, x, y);
         this.renderExpressionPlane(expPoints, x, y);
       }
     }
@@ -141,11 +145,13 @@ export default class Graphics{
   }
 
   renderExpressionSquare(expPoints, x, y){
-    const lineMaterial = new THREE.LineBasicMaterial({color: white});
-    const linePoints = [expPoints[x][y], expPoints[x+1][y], expPoints[x+1][y+1], expPoints[x][y+1], expPoints[x][y]];
-    const lineGeometry = new THREE.BufferGeometry().setFromPoints(linePoints);
-    const line = new THREE.Line(lineGeometry, lineMaterial);
-    this.scene.add(line);
+    if(expPoints[x+1] != undefined && expPoints[x+1][y+1] != undefined && expPoints[x][y+1] != undefined){
+      const lineMaterial = new THREE.LineBasicMaterial({color: white});
+      const linePoints = [expPoints[x][y], expPoints[x+1][y], expPoints[x+1][y+1], expPoints[x][y+1], expPoints[x][y]];
+      const lineGeometry = new THREE.BufferGeometry().setFromPoints(linePoints);
+      const line = new THREE.Line(lineGeometry, lineMaterial);
+      this.scene.add(line);
+    }
   }
 
   renderExpressionPlane(expPoints, x, y){

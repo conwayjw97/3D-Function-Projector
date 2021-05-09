@@ -13,10 +13,17 @@ function Canvas(props) {
   const canvas = useRef(null);
   const width = window.innerWidth;
   const height = window.innerHeight;
+  const graphicsLoaded = useRef(false);
+  let graphics;
 
   useEffect(() => {
-    console.log("Loading");
-    const graphics = new Graphics(canvas.current, width, height, props.expression, props.detail, [-100, 100], [-100, 100], [-100, 100]);
+    if(graphicsLoaded.current == false){
+      graphics = new Graphics(canvas.current, width, height, props.expression, props.detail, [-100, 100], [-100, 100], [-100, 100]);
+      graphicsLoaded.current = true;
+    }
+    else if (graphicsLoaded.current){
+      graphics.update();
+    }
   }, [props.updateCount]);
 
   return (
