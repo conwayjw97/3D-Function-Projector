@@ -51,10 +51,13 @@ export default class Graphics{
     animate();
   }
 
-  updateExpression(expression){
-    this.expression = expression;
-    this.scene.remove(this.expressionGroup);
-    this.renderExpression();
+  updateProjection(expression, detail){
+    if(this.expression != expression || this.detail != detail){
+      this.expression = expression;
+      this.detail = detail;
+      this.scene.remove(this.expressionGroup);
+      this.renderExpression();
+    }
   }
 
   renderAxisIndicators(){
@@ -66,16 +69,16 @@ export default class Graphics{
     this.renderText("Z", -100, 102.5, -100, red);
     this.renderText("Y", -100, -100, 102.5, blue);
 
-    this.renderLine(rightBottomBack, rightTopBack, new THREE.LineBasicMaterial({color: white}));
-    this.renderLine(rightTopBack, leftTopBack, new THREE.LineBasicMaterial({color: white}));
-    this.renderLine(leftTopBack, leftTopFront, new THREE.LineBasicMaterial({color: white}));
-    this.renderLine(leftTopFront, leftTopFront, new THREE.LineBasicMaterial({color: white}));
-    this.renderLine(leftTopFront, leftBottomFront, new THREE.LineBasicMaterial({color: white}));
-    this.renderLine(leftTopFront, rightTopFront, new THREE.LineBasicMaterial({color: white}));
-    this.renderLine(leftBottomFront, rightBottomFront, new THREE.LineBasicMaterial({color: white}));
-    this.renderLine(rightBottomFront,  rightTopFront, new THREE.LineBasicMaterial({color: white}));
-    this.renderLine(rightTopFront, rightTopBack, new THREE.LineBasicMaterial({color: white}));
-    this.renderLine(rightBottomFront, rightBottomBack, new THREE.LineBasicMaterial({color: white}));
+    // this.renderLine(rightBottomBack, rightTopBack, new THREE.LineBasicMaterial({color: white}));
+    // this.renderLine(rightTopBack, leftTopBack, new THREE.LineBasicMaterial({color: white}));
+    // this.renderLine(leftTopBack, leftTopFront, new THREE.LineBasicMaterial({color: white}));
+    // this.renderLine(leftTopFront, leftTopFront, new THREE.LineBasicMaterial({color: white}));
+    // this.renderLine(leftTopFront, leftBottomFront, new THREE.LineBasicMaterial({color: white}));
+    // this.renderLine(leftTopFront, rightTopFront, new THREE.LineBasicMaterial({color: white}));
+    // this.renderLine(leftBottomFront, rightBottomFront, new THREE.LineBasicMaterial({color: white}));
+    // this.renderLine(rightBottomFront,  rightTopFront, new THREE.LineBasicMaterial({color: white}));
+    // this.renderLine(rightTopFront, rightTopBack, new THREE.LineBasicMaterial({color: white}));
+    // this.renderLine(rightBottomFront, rightBottomBack, new THREE.LineBasicMaterial({color: white}));
   }
 
   renderLine(startVec, endVec, material){
@@ -112,11 +115,12 @@ export default class Graphics{
 
   evaluateExpression(){
     let expPoints = [];
+    const step = (this.xRange[1]-this.xRange[0])/this.detail;
     if(this.expression.includes("x") || this.expression.includes("y")){
-      for(let x=this.xRange[0]; x<=this.xRange[1]; x+=this.detail){
+      for(let x=this.xRange[0]; x<=this.xRange[1]; x+=step){
         let xEval = this.expression.replaceAll("x", "("+x+")");
         let yPoints = [];
-        for(let y=this.yRange[0]; y<=this.yRange[1]; y+=this.detail){
+        for(let y=this.yRange[0]; y<=this.yRange[1]; y+=step){
           let zEval;
           if(xEval.includes("y")){
             let yEval = xEval.replaceAll("y", "("+y+")");
@@ -181,7 +185,7 @@ export default class Graphics{
     const isValidPoint = expPoints[x+1] !== undefined;
 
     if(isValidPoint){
-      const colour = this.getColourForVector(expPoints[x][y]);
+      const colour = this.getColourForY(expPoints[x][y].y);
       const material = new THREE.MeshBasicMaterial({color: colour, side: THREE.DoubleSide});
 
       const firstTriangleValid = expPoints[x+1][y] !== undefined && expPoints[x+1][y+1] !== undefined;

@@ -18,15 +18,15 @@ function Canvas(props) {
   useEffect(() => {
     const graphics = new Graphics(canvas.current, width, height, props.expression, props.detail, [-100, 100], [-100, 100], [-100, 100]);
 
-    const updateExpression = (expression) => {
-      graphics.updateExpression(expression);
+    const updateProjection = (expression, detail) => {
+      graphics.updateProjection(expression, detail);
     }
 
-    graphicsControls.current = {updateExpression};
+    graphicsControls.current = {updateProjection};
   }, []);
 
   useEffect(() => {
-    graphicsControls.current.updateExpression(props.expression);
+    graphicsControls.current.updateProjection(props.expression, props.detail);
   }, [props.updateCount]);
 
   return (

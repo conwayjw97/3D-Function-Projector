@@ -5,7 +5,7 @@ import './App.css';
 
 function App() {
   const [updateCount, setUpdateCount] = useState(0);
-  const [detail, setDetail] = useState(5);
+  const [detail, setDetail] = useState(100);
   const [expression, setExpression] = useState("1-abs(x+y)-abs(y-x)");
 
   const handleDetailChange = (event) => {
