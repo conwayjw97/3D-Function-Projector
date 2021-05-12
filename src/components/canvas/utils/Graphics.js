@@ -21,12 +21,12 @@ const leftTopFront = new THREE.Vector3(-100, 100, 100);
 const leftBottomFront = new THREE.Vector3(-100, -100, 100);
 
 export default class Graphics{
-  constructor(canvas, width, height, expression, detail, xRange, yRange, zRange){
+  constructor(canvas, width, height, expression, detail, ranges){
     this.expression = expression;
     this.detail = detail;
-    this.xRange = xRange;
-    this.yRange = yRange;
-    this.zRange = zRange;
+    this.xRange = [parseInt(ranges[0][0]), parseInt(ranges[0][1])];
+    this.yRange = [parseInt(ranges[1][0]), parseInt(ranges[1][1])];
+    this.zRange = [parseInt(ranges[2][0]), parseInt(ranges[2][1])];
 
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(45, width/height, 0.1, 1000);
@@ -55,7 +55,9 @@ export default class Graphics{
     if(this.expression != expression || this.detail != detail || this.ranges != ranges){
       this.expression = expression;
       this.detail = detail;
-      this.ranges = ranges;
+      this.xRange = [parseInt(ranges[0][0]), parseInt(ranges[0][1])];
+      this.yRange = [parseInt(ranges[1][0]), parseInt(ranges[1][1])];
+      this.zRange = [parseInt(ranges[2][0]), parseInt(ranges[2][1])];
       this.scene.remove(this.expressionGroup);
       this.renderExpression();
     }
@@ -114,6 +116,10 @@ export default class Graphics{
     this.scene.add(this.expressionGroup);
   }
 
+  rangeScale(n, nRangeMin, nRangeMax){
+    return (n - nRangeMin) * (100 - (-100)) / (nRangeMax - nRangeMin) + (-100);
+  }
+
   evaluateExpression(){
     let expPoints = [];
     const step = (this.xRange[1]-this.xRange[0])/this.detail;
@@ -131,7 +137,7 @@ export default class Graphics{
             zEval = evaluate(xEval);
           }
           if(zEval>=this.zRange[0] && zEval<=this.zRange[1]){
-            yPoints.push(new THREE.Vector3(x, zEval, y));
+            yPoints.push(new THREE.Vector3(this.rangeScale(x, this.xRange[0], this.xRange[1]), this.rangeScale(zEval, this.zRange[0], this.zRange[1]), this.rangeScale(y, this.yRange[0], this.yRange[1])));
           }
         }
         if(yPoints.length > 0){

@@ -7,7 +7,7 @@ function Controls(props) {
     <div className="controls">
       <div className="expression">
         <label>Detail: </label>
-        <input type="range" id="detail" name="detail" min="10" max="200" value={props.detail} onChange={props.handleDetailChange} />
+        <input type="range" id="detail" name="detail" min="1" max="200" value={props.detail} onChange={props.handleDetailChange} />
 
         <label> Z = </label>
         <input type="text" id="expression" name="expression" value={props.expression} onChange={props.handleExpressionChange} />
