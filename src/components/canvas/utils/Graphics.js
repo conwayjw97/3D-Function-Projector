@@ -40,7 +40,7 @@ export default class Graphics{
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.target = new THREE.Vector3(0, 0, 0);
 
-    this.renderAxisIndicators();
+    this.renderAxes();
     this.renderExpression();
 
     const animate = () => {
@@ -66,14 +66,20 @@ export default class Graphics{
     console.log(this.renderingFeatures);
   }
 
-  renderAxisIndicators(){
+  renderAxes(){
     this.renderLine(leftBottomBack, rightBottomBack, new THREE.LineBasicMaterial({color: green}));
-    this.renderLine(leftBottomBack, leftTopBack, new THREE.LineBasicMaterial({color: red}));
     this.renderLine(leftBottomBack, leftBottomFront, new THREE.LineBasicMaterial({color: blue}));
+    this.renderLine(leftBottomBack, leftTopBack, new THREE.LineBasicMaterial({color: red}));
 
-    this.renderText("X", 102.5, -100, -100, green);
-    this.renderText("Z", -100, 102.5, -100, red);
-    this.renderText("Y", -100, -100, 102.5, blue);
+    this.renderText("X", 6, 102.5, -100, -100, green);
+    this.renderText("Y", 6, -100, -100, 102.5, blue);
+    this.renderText("Z", 6, -100, 102.5, -100, red);
+
+    for(let i=-80; i<100; i+=20){
+      this.renderText(this.rangeScale(i, -100, 100, this.xRange[0], this.xRange[1]), 4, i, -105, -105, green);
+      this.renderText(this.rangeScale(i, -100, 100, this.yRange[0], this.yRange[1]), 4, -105, -105, i, blue);
+      this.renderText(this.rangeScale(i, -100, 100, this.zRange[0], this.zRange[1]), 4, -105, i, -105, red);
+    }
 
     // this.renderLine(rightBottomBack, rightTopBack, new THREE.LineBasicMaterial({color: white}));
     // this.renderLine(rightTopBack, leftTopBack, new THREE.LineBasicMaterial({color: white}));
@@ -94,8 +100,8 @@ export default class Graphics{
     this.scene.add(line);
   }
 
-  renderText(string, x, y, z, color){
-    const text = new SpriteText(string, 6, color);
+  renderText(string, size, x, y, z, color){
+    const text = new SpriteText(string, size, color);
     text.position.x = x;
     text.position.y = y;
     text.position.z = z;
@@ -125,8 +131,8 @@ export default class Graphics{
     this.scene.add(this.expressionGroup);
   }
 
-  rangeScale(n, nRangeMin, nRangeMax){
-    return (n - nRangeMin) * (100 - (-100)) / (nRangeMax - nRangeMin) + (-100);
+  rangeScale(n, nRangeMin, nRangeMax, outRangeMin, outRangeMax){
+    return (n - nRangeMin) * (outRangeMax - outRangeMin) / (nRangeMax - nRangeMin) + outRangeMin;
   }
 
   evaluateExpression(){
@@ -146,7 +152,7 @@ export default class Graphics{
             zEval = evaluate(xEval);
           }
           if(zEval>=this.zRange[0] && zEval<=this.zRange[1]){
-            yPoints.push(new THREE.Vector3(this.rangeScale(x, this.xRange[0], this.xRange[1]), this.rangeScale(zEval, this.zRange[0], this.zRange[1]), this.rangeScale(y, this.yRange[0], this.yRange[1])));
+            yPoints.push(new THREE.Vector3(this.rangeScale(x, this.xRange[0], this.xRange[1], -100, 100), this.rangeScale(zEval, this.zRange[0], this.zRange[1], -100, 100), this.rangeScale(y, this.yRange[0], this.yRange[1], -100, 100)));
           }
         }
         if(yPoints.length > 0){
