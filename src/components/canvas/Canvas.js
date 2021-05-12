@@ -25,10 +25,9 @@ function Canvas(props) {
     graphicsControls.current = {updateProjection};
   }, []);
 
-  // TODO: Split update and useEffect functions by variable
   useEffect(() => {
     graphicsControls.current.updateProjection(props.expression, props.detail, props.ranges, props.renderingFeatures);
-  }, [props.updateCount]);
+  }, [props.detail, props.ranges, props.renderingFeatures, props.updateCount]);
 
   return (
     <canvas ref={canvas} width={width} height={height} className="canvas">
