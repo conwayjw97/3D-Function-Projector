@@ -7,7 +7,7 @@ function Controls(props) {
     <div className="controls">
       <div className="expression">
         <label>Detail: </label>
-        <input type="range" id="detail" name="detail" min="1" max="200" value={props.detail} onChange={props.handleDetailChange} />
+        <input type="range" id="detail" name="detail" min="10" max="200" value={props.detail} onChange={props.handleDetailChange} />
 
         <label> Z = </label>
         <input type="text" id="expression" name="expression" value={props.expression} onChange={props.handleExpressionChange} />
@@ -30,6 +30,15 @@ function Controls(props) {
         <label>,</label>
         <input type="text" id="upperZRange" value={props.ranges[2][1]} onChange={props.handleRangeChange} style={{width: "2.5em"}} />
         <label>]</label>
+
+        <label> Points: </label>
+        <input id="pointsToggle" type="checkbox" defaultChecked onChange={props.handleRenderingFeatureChange} />
+
+        <label> Squares: </label>
+        <input id="squaresToggle" type="checkbox" defaultChecked onChange={props.handleRenderingFeatureChange} />
+
+        <label> Planes: </label>
+        <input id="planesToggle" type="checkbox" defaultChecked onChange={props.handleRenderingFeatureChange} />
       </div>
     </div>
   );

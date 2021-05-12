@@ -21,12 +21,13 @@ const leftTopFront = new THREE.Vector3(-100, 100, 100);
 const leftBottomFront = new THREE.Vector3(-100, -100, 100);
 
 export default class Graphics{
-  constructor(canvas, width, height, expression, detail, ranges){
+  constructor(canvas, width, height, expression, detail, ranges, renderingFeatures){
     this.expression = expression;
     this.detail = detail;
     this.xRange = [parseInt(ranges[0][0]), parseInt(ranges[0][1])];
     this.yRange = [parseInt(ranges[1][0]), parseInt(ranges[1][1])];
     this.zRange = [parseInt(ranges[2][0]), parseInt(ranges[2][1])];
+    this.renderingFeatures = renderingFeatures;
 
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(45, width/height, 0.1, 1000);
@@ -51,16 +52,18 @@ export default class Graphics{
     animate();
   }
 
-  updateProjection(expression, detail, ranges){
-    if(this.expression != expression || this.detail != detail || this.ranges != ranges){
+  updateProjection(expression, detail, ranges, renderingFeatures){
+    if(this.expression != expression || this.detail != detail || this.ranges != ranges || this.renderingFeatures != renderingFeatures){
       this.expression = expression;
       this.detail = detail;
       this.xRange = [parseInt(ranges[0][0]), parseInt(ranges[0][1])];
       this.yRange = [parseInt(ranges[1][0]), parseInt(ranges[1][1])];
       this.zRange = [parseInt(ranges[2][0]), parseInt(ranges[2][1])];
+      this.renderingFeatures = renderingFeatures;
       this.scene.remove(this.expressionGroup);
       this.renderExpression();
     }
+    console.log(this.renderingFeatures);
   }
 
   renderAxisIndicators(){
@@ -72,16 +75,16 @@ export default class Graphics{
     this.renderText("Z", -100, 102.5, -100, red);
     this.renderText("Y", -100, -100, 102.5, blue);
 
-    this.renderLine(rightBottomBack, rightTopBack, new THREE.LineBasicMaterial({color: white}));
-    this.renderLine(rightTopBack, leftTopBack, new THREE.LineBasicMaterial({color: white}));
-    this.renderLine(leftTopBack, leftTopFront, new THREE.LineBasicMaterial({color: white}));
-    this.renderLine(leftTopFront, leftTopFront, new THREE.LineBasicMaterial({color: white}));
-    this.renderLine(leftTopFront, leftBottomFront, new THREE.LineBasicMaterial({color: white}));
-    this.renderLine(leftTopFront, rightTopFront, new THREE.LineBasicMaterial({color: white}));
-    this.renderLine(leftBottomFront, rightBottomFront, new THREE.LineBasicMaterial({color: white}));
-    this.renderLine(rightBottomFront,  rightTopFront, new THREE.LineBasicMaterial({color: white}));
-    this.renderLine(rightTopFront, rightTopBack, new THREE.LineBasicMaterial({color: white}));
-    this.renderLine(rightBottomFront, rightBottomBack, new THREE.LineBasicMaterial({color: white}));
+    // this.renderLine(rightBottomBack, rightTopBack, new THREE.LineBasicMaterial({color: white}));
+    // this.renderLine(rightTopBack, leftTopBack, new THREE.LineBasicMaterial({color: white}));
+    // this.renderLine(leftTopBack, leftTopFront, new THREE.LineBasicMaterial({color: white}));
+    // this.renderLine(leftTopFront, leftTopFront, new THREE.LineBasicMaterial({color: white}));
+    // this.renderLine(leftTopFront, leftBottomFront, new THREE.LineBasicMaterial({color: white}));
+    // this.renderLine(leftTopFront, rightTopFront, new THREE.LineBasicMaterial({color: white}));
+    // this.renderLine(leftBottomFront, rightBottomFront, new THREE.LineBasicMaterial({color: white}));
+    // this.renderLine(rightBottomFront,  rightTopFront, new THREE.LineBasicMaterial({color: white}));
+    // this.renderLine(rightTopFront, rightTopBack, new THREE.LineBasicMaterial({color: white}));
+    // this.renderLine(rightBottomFront, rightBottomBack, new THREE.LineBasicMaterial({color: white}));
   }
 
   renderLine(startVec, endVec, material){
@@ -104,12 +107,18 @@ export default class Graphics{
     const expPoints = this.evaluateExpression();
 
     this.expressionGroup = new THREE.Group();
-    this.expressionGroup = this.createExpressionDots(this.expressionGroup, expPoints);
+    if(this.renderingFeatures["points"]){
+      this.expressionGroup = this.createExpressionDots(this.expressionGroup, expPoints);
+    }
     for(let x=0; x<expPoints.length; x++){
       for(let y=0; y<expPoints[x].length; y++){
         // this.renderText(x + ":" + y, expPoints[x][y].x, expPoints[x][y].y, expPoints[x][y].z, white);
-        this.expressionGroup = this.createExpressionSquare(this.expressionGroup, expPoints, x, y);
-        this.expressionGroup = this.createExpressionPlane(this.expressionGroup, expPoints, x, y);
+        if(this.renderingFeatures["squares"]){
+          this.expressionGroup = this.createExpressionSquare(this.expressionGroup, expPoints, x, y);
+        }
+        if(this.renderingFeatures["planes"]){
+          this.expressionGroup = this.createExpressionPlane(this.expressionGroup, expPoints, x, y);
+        }
       }
     }
 

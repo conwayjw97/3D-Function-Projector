@@ -8,6 +8,7 @@ function App() {
   const [detail, setDetail] = useState(50);
   const [expression, setExpression] = useState("1-abs(x+y)-abs(y-x)");
   const [ranges, setRanges] = useState([["-100", "100"], ["-100", "100"], ["-100", "100"]]);
+  const [renderingFeatures, setRenderingFeatures] = useState({"points":true, "squares":true, "planes":true});
 
   const handleDetailChange = (event) => {
     setDetail(event.target.value);
@@ -42,6 +43,22 @@ function App() {
     setRanges(newRanges);
   }
 
+  const handleRenderingFeatureChange = (event) => {
+    const newRenderingFeatures = JSON.parse(JSON.stringify(renderingFeatures));
+    switch(event.target.id){
+      case "pointsToggle":
+        newRenderingFeatures["points"] = event.target.checked;
+        break;
+      case "squaresToggle":
+        newRenderingFeatures["squares"] = event.target.checked;
+        break;
+      case "planesToggle":
+        newRenderingFeatures["planes"] = event.target.checked;
+        break;
+    }
+    setRenderingFeatures(newRenderingFeatures);
+  }
+
   const handleUpdate = () => {
     setUpdateCount(updateCount + 1);
   }
@@ -53,6 +70,7 @@ function App() {
         detail={detail}
         expression={expression}
         ranges={ranges}
+        renderingFeatures={renderingFeatures}
         updateCount={updateCount}
       />
       <Controls
@@ -62,6 +80,7 @@ function App() {
         handleExpressionChange={handleExpressionChange}
         ranges={ranges}
         handleRangeChange={handleRangeChange}
+        handleRenderingFeatureChange={handleRenderingFeatureChange}
         handleUpdate={handleUpdate}
       />
     </div>
