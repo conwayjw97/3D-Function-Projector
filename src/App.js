@@ -7,8 +7,7 @@ function App() {
   const [updateCount, setUpdateCount] = useState(0);
   const [detail, setDetail] = useState(50);
   const [expression, setExpression] = useState("1-abs(x+y)-abs(y-x)");
-  const [xRange, setXRange] = useState([-100, 100]);
-  const [yRange, setYRange] = useState([-100, 100]);
+  const [ranges, setRanges] = useState([[-100, 100], [-100, 100], [-100, 100]]);
 
   const handleDetailChange = (event) => {
     setDetail(event.target.value);
@@ -18,27 +17,36 @@ function App() {
     setExpression(event.target.value);
   }
 
-  const handleXrangeChange = (event) => {
-    const range = event.target.value;
-    console.log(range);
-    if(!isNaN(parseInt(range[0])) && !isNaN(parseInt(range[1])) && parseInt(range[0])<parseInt(range[1])){
-      console.log([range[0], range[1]]);
-      console.log([parseInt(range[0]), parseInt(range[1])]);
-      setXRange([parseInt(range[0]), parseInt(range[1])]);
+  const handleRangeChange = (event) => {
+    const newRanges = [...ranges];
+    switch(event.target.id){
+      case "lowerXRange":
+        newRanges[0][0] = parseInt(event.target.value);
+        break;
+      case "upperXRange":
+        newRanges[0][1] = parseInt(event.target.value);
+        break;
+      case "lowerYRange":
+        newRanges[1][0] = parseInt(event.target.value);
+        break;
+      case "upperYRange":
+        newRanges[1][1] = parseInt(event.target.value);
+        break;
+      case "lowerZRange":
+        newRanges[2][0] = parseInt(event.target.value);
+        break;
+      case "upperZRange":
+        newRanges[2][1] = parseInt(event.target.value);
+        break;
     }
-  }
-
-  const handleYrangeChange = (event) => {
-    const range = event.target.value.split(",");
-    if(range.length=2 && !isNaN(range[0]) && !isNaN(range[1]) && range[0]<range[1]){
-      setYRange([parseInt(range[0]), parseInt(range[1])]);
-    }
+    setRanges(newRanges);
   }
 
   const handleUpdate = () => {
     setUpdateCount(updateCount + 1);
   }
 
+  // TODO: Make a reducer for all these states
   return (
     <div className="App">
       <Canvas
@@ -51,10 +59,8 @@ function App() {
         handleDetailChange={handleDetailChange}
         expression={expression}
         handleExpressionChange={handleExpressionChange}
-        xRange={xRange}
-        handleXrangeChange={handleXrangeChange}
-        yRange={yRange}
-        handleYrangeChange={handleYrangeChange}
+        ranges={ranges}
+        handleRangeChange={handleRangeChange}
         handleUpdate={handleUpdate}
       />
     </div>
