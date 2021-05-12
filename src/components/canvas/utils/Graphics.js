@@ -12,13 +12,9 @@ const green = "rgb(0, 255, 0)";
 const blue = "rgb(0, 0, 255)";
 const red = "rgb(255, 0, 43)";
 
-const rightTopBack = new THREE.Vector3(100, 100, -100);
 const rightBottomBack = new THREE.Vector3(100, -100, -100);
-const rightTopFront = new THREE.Vector3(100, 100, 100);
-const rightBottomFront = new THREE.Vector3(100, -100, 100);
 const leftTopBack = new THREE.Vector3(-100, 100, -100);
 const leftBottomBack = new THREE.Vector3(-100, -100, -100);
-const leftTopFront = new THREE.Vector3(-100, 100, 100);
 const leftBottomFront = new THREE.Vector3(-100, -100, 100);
 
 export default class Graphics{
@@ -54,7 +50,7 @@ export default class Graphics{
   }
 
   updateProjection(expression, detail, ranges, renderingFeatures){
-    if(this.expression != expression || this.detail != detail || this.ranges != ranges || this.renderingFeatures != renderingFeatures){
+    if(this.expression !== expression || this.detail !== detail || this.ranges !== ranges || this.renderingFeatures !== renderingFeatures){
       this.expression = expression;
       this.detail = detail;
       this.xRange = [parseInt(ranges[0][0]), parseInt(ranges[0][1])];
@@ -74,17 +70,6 @@ export default class Graphics{
     this.renderText("X", 102.5, -100, -100, green);
     this.renderText("Y", -100, -100, 102.5, blue);
     this.renderText("Z", -100, 102.5, -100, red);
-
-    // this.renderLine(rightBottomBack, rightTopBack, new THREE.LineBasicMaterial({color: white}));
-    // this.renderLine(rightTopBack, leftTopBack, new THREE.LineBasicMaterial({color: white}));
-    // this.renderLine(leftTopBack, leftTopFront, new THREE.LineBasicMaterial({color: white}));
-    // this.renderLine(leftTopFront, leftTopFront, new THREE.LineBasicMaterial({color: white}));
-    // this.renderLine(leftTopFront, leftBottomFront, new THREE.LineBasicMaterial({color: white}));
-    // this.renderLine(leftTopFront, rightTopFront, new THREE.LineBasicMaterial({color: white}));
-    // this.renderLine(leftBottomFront, rightBottomFront, new THREE.LineBasicMaterial({color: white}));
-    // this.renderLine(rightBottomFront,  rightTopFront, new THREE.LineBasicMaterial({color: white}));
-    // this.renderLine(rightTopFront, rightTopBack, new THREE.LineBasicMaterial({color: white}));
-    // this.renderLine(rightBottomFront, rightBottomBack, new THREE.LineBasicMaterial({color: white}));
   }
 
   renderLine(startVec, endVec, material){
@@ -235,7 +220,6 @@ export default class Graphics{
       if(firstTriangleValid){
         downardsTriangleNeeded = false;
         const planePointsBottomTriangle = [expPoints[x][y], expPoints[x+1][y], expPoints[x+1][y+1]];
-        const newPlaneGeometry = new THREE.BufferGeometry().setFromPoints(planePointsBottomTriangle);
         planeGeometry = BufferGeometryUtils.mergeBufferGeometries([planeGeometry, new THREE.BufferGeometry().setFromPoints(planePointsBottomTriangle)]);
       }
       if(secondTriangleValid){

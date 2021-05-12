@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Canvas from './components/canvas/Canvas.js';
 import Controls from './components/controls/Controls.js';
 import './App.css';
@@ -39,6 +39,8 @@ function App() {
       case "upperZRange":
         newRanges[2][1] = event.target.value;
         break;
+      default:
+        break;
     }
     setRanges(newRanges);
   }
@@ -54,6 +56,8 @@ function App() {
         break;
       case "planesToggle":
         newRenderingFeatures["planes"] = event.target.checked;
+        break;
+      default:
         break;
     }
     setRenderingFeatures(newRenderingFeatures);
