@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 
 import SpriteText from 'three-spritetext';
 
@@ -102,14 +103,13 @@ export default class Graphics{
     this.scene.add(text);
   }
 
-  createAxisUnit(group, string, x, y, z, color){
+  createAxisUnit(string, x, y, z, color){
     const text = new SpriteText(string, 4, color);
     text.position.x = x;
     text.position.y = y;
     text.position.z = z;
     text.fontFace = "Consolas";
-    group.add(text);
-    return group;
+    return text;
   }
 
   // TODO: Change the creation functions so you can just write group.add(function)
@@ -119,23 +119,29 @@ export default class Graphics{
     this.expressionGroup = new THREE.Group();
 
     for(let i=-80; i<100; i+=20){
-      this.expressionGroup = this.createAxisUnit(this.expressionGroup, this.rangeScale(i, -100, 100, this.xRange[0], this.xRange[1]), i, -105, -105, green);
-      this.expressionGroup = this.createAxisUnit(this.expressionGroup, this.rangeScale(i, -100, 100, this.yRange[0], this.yRange[1]), -105, -105, i, blue);
-      this.expressionGroup = this.createAxisUnit(this.expressionGroup, this.rangeScale(i, -100, 100, this.zRange[0], this.zRange[1]), -105, i, -105, red);
+      this.expressionGroup.add(this.createAxisUnit(this.rangeScale(i, -100, 100, this.xRange[0], this.xRange[1]), i, -105, -105, green));
+      this.expressionGroup.add(this.createAxisUnit(this.rangeScale(i, -100, 100, this.yRange[0], this.yRange[1]), -105, -105, i, blue));
+      this.expressionGroup.add(this.createAxisUnit(this.rangeScale(i, -100, 100, this.zRange[0], this.zRange[1]), -105, i, -105, red));
     }
 
     if(this.renderingFeatures["points"]){
-      this.expressionGroup = this.createExpressionDots(this.expressionGroup, expPoints);
+      this.expressionGroup.add(this.createExpressionDots(expPoints));
     }
 
     for(let x=0; x<expPoints.length; x++){
       for(let y=0; y<expPoints[x].length; y++){
         // this.renderText(x + ":" + y, expPoints[x][y].x, expPoints[x][y].y, expPoints[x][y].z, white);
         if(this.renderingFeatures["squares"]){
-          this.expressionGroup = this.createExpressionSquare(this.expressionGroup, expPoints, x, y);
+          const expSquares = this.createExpressionSquare(expPoints, x, y);
+          if(expSquares != null){
+            this.expressionGroup.add(expSquares);
+          }
         }
         if(this.renderingFeatures["planes"]){
-          this.expressionGroup = this.createExpressionPlane(this.expressionGroup, expPoints, x, y);
+          const expPlanes = this.createExpressionPlane(expPoints, x, y)
+          if(expPlanes != null){
+            this.expressionGroup.add(expPlanes);
+          }
         }
       }
     }
@@ -175,16 +181,14 @@ export default class Graphics{
     return expPoints;
   }
 
-  createExpressionDots(group, expPoints){
+  createExpressionDots(expPoints){
     const points = [].concat.apply([], expPoints);
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
     const material = new THREE.PointCloudMaterial({color: white, size: 0.25});
-    const expressionPoints = new THREE.Points(geometry, material);
-    group.add(expressionPoints);
-    return group;
+    return new THREE.Points(geometry, material);
   }
 
-  createExpressionSquare(group, expPoints, x, y){
+  createExpressionSquare(expPoints, x, y){
     const isValidPoint = expPoints[x+1] !== undefined;
 
     if(isValidPoint){
@@ -207,15 +211,14 @@ export default class Graphics{
 
       if(points !== null){
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        const line = new THREE.Line(geometry, material);
-        group.add(line);
+        return new THREE.Line(geometry, material);
       }
     }
 
-    return group;
+    return null;
   }
 
-  createExpressionPlane(group, expPoints, x, y){
+  createExpressionPlane(expPoints, x, y){
     const isValidPoint = expPoints[x+1] !== undefined;
 
     if(isValidPoint){
@@ -227,26 +230,27 @@ export default class Graphics{
       const downardsTriangleValid = expPoints[x][y+1] !== undefined && expPoints[x+1][y] !== undefined;
 
       let downardsTriangleNeeded = true;
+      let planeGeometry = new THREE.BufferGeometry().setAttribute("position", new THREE.Float32BufferAttribute());
       if(firstTriangleValid){
         downardsTriangleNeeded = false;
-        const planePointsA = [expPoints[x][y], expPoints[x+1][y], expPoints[x+1][y+1]];
-        const planeGeometryA = new THREE.BufferGeometry().setFromPoints(planePointsA);
-        group.add(new THREE.Mesh(planeGeometryA, material));
+        const planePointsBottomTriangle = [expPoints[x][y], expPoints[x+1][y], expPoints[x+1][y+1]];
+        const newPlaneGeometry = new THREE.BufferGeometry().setFromPoints(planePointsBottomTriangle);
+        planeGeometry = BufferGeometryUtils.mergeBufferGeometries([planeGeometry, new THREE.BufferGeometry().setFromPoints(planePointsBottomTriangle)]);
       }
       if(secondTriangleValid){
         downardsTriangleNeeded = false;
-        const planePointsB = [expPoints[x][y], expPoints[x][y+1], expPoints[x+1][y+1]];
-        const planeGeometryB = new THREE.BufferGeometry().setFromPoints(planePointsB);
-        group.add(new THREE.Mesh(planeGeometryB, material));
+        const planePointsTopTriangle = [expPoints[x][y], expPoints[x][y+1], expPoints[x+1][y+1]];
+        planeGeometry = BufferGeometryUtils.mergeBufferGeometries([planeGeometry, new THREE.BufferGeometry().setFromPoints(planePointsTopTriangle)]);
       }
       if(downardsTriangleNeeded && downardsTriangleValid){
-        const planePoints = [expPoints[x][y], expPoints[x][y+1], expPoints[x+1][y]];
-        const planeGeometry = new THREE.BufferGeometry().setFromPoints(planePoints);
-        group.add(new THREE.Mesh(planeGeometry, material));
+        const planePointsDownardsTriangle = [expPoints[x][y], expPoints[x][y+1], expPoints[x+1][y]];
+        planeGeometry = BufferGeometryUtils.mergeBufferGeometries([planeGeometry, new THREE.BufferGeometry().setFromPoints(planePointsDownardsTriangle)]);
       }
+
+      return new THREE.Mesh(planeGeometry, material);
     }
 
-    return group;
+    return null;
   }
 
   getColourForVector(vector){
