@@ -103,16 +103,6 @@ export default class Graphics{
     this.scene.add(text);
   }
 
-  createAxisUnit(string, x, y, z, color){
-    const text = new SpriteText(string, 4, color);
-    text.position.x = x;
-    text.position.y = y;
-    text.position.z = z;
-    text.fontFace = "Consolas";
-    return text;
-  }
-
-  // TODO: Change the creation functions so you can just write group.add(function)
   renderExpression(){
     const expPoints = this.evaluateExpression();
 
@@ -130,7 +120,6 @@ export default class Graphics{
 
     for(let x=0; x<expPoints.length; x++){
       for(let y=0; y<expPoints[x].length; y++){
-        // this.renderText(x + ":" + y, expPoints[x][y].x, expPoints[x][y].y, expPoints[x][y].z, white);
         if(this.renderingFeatures["squares"]){
           const expSquares = this.createExpressionSquare(expPoints, x, y);
           if(expSquares != null){
@@ -170,7 +159,10 @@ export default class Graphics{
             zEval = evaluate(xEval);
           }
           if(zEval>=this.zRange[0] && zEval<=this.zRange[1]){
-            yPoints.push(new THREE.Vector3(this.rangeScale(x, this.xRange[0], this.xRange[1], -100, 100), this.rangeScale(zEval, this.zRange[0], this.zRange[1], -100, 100), this.rangeScale(y, this.yRange[0], this.yRange[1], -100, 100)));
+            const xPos = this.rangeScale(x, this.xRange[0], this.xRange[1], -100, 100);
+            const yPos = this.rangeScale(zEval, this.zRange[0], this.zRange[1], -100, 100);
+            const zPos = this.rangeScale(y, this.yRange[0], this.yRange[1], -100, 100);
+            yPoints.push(new THREE.Vector3(xPos, yPos, zPos));
           }
         }
         if(yPoints.length > 0){
@@ -181,10 +173,19 @@ export default class Graphics{
     return expPoints;
   }
 
+  createAxisUnit(string, x, y, z, color){
+    const text = new SpriteText(string, 4, color);
+    text.position.x = x;
+    text.position.y = y;
+    text.position.z = z;
+    text.fontFace = "Consolas";
+    return text;
+  }
+
   createExpressionDots(expPoints){
     const points = [].concat.apply([], expPoints);
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
-    const material = new THREE.PointCloudMaterial({color: white, size: 0.25});
+    const material = new THREE.PointsMaterial({color: white, size: 0.25});
     return new THREE.Points(geometry, material);
   }
 
@@ -230,7 +231,7 @@ export default class Graphics{
       const downardsTriangleValid = expPoints[x][y+1] !== undefined && expPoints[x+1][y] !== undefined;
 
       let downardsTriangleNeeded = true;
-      let planeGeometry = new THREE.BufferGeometry().setAttribute("position", new THREE.Float32BufferAttribute());
+      let planeGeometry = new THREE.BufferGeometry().setFromPoints([]);
       if(firstTriangleValid){
         downardsTriangleNeeded = false;
         const planePointsBottomTriangle = [expPoints[x][y], expPoints[x+1][y], expPoints[x+1][y+1]];
