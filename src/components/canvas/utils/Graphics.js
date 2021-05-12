@@ -208,9 +208,6 @@ export default class Graphics{
     const isValidPoint = expPoints[x+1] !== undefined;
 
     if(isValidPoint){
-      const colour = this.getColourForY(expPoints[x][y].y);
-      const material = new THREE.MeshBasicMaterial({color: colour, side: THREE.DoubleSide});
-
       const firstTriangleValid = expPoints[x+1][y] !== undefined && expPoints[x+1][y+1] !== undefined;
       const secondTriangleValid = expPoints[x][y+1] !== undefined && expPoints[x+1][y+1] !== undefined;
       const downardsTriangleValid = expPoints[x][y+1] !== undefined && expPoints[x+1][y] !== undefined;
@@ -231,6 +228,15 @@ export default class Graphics{
         const planePointsDownardsTriangle = [expPoints[x][y], expPoints[x][y+1], expPoints[x+1][y]];
         planeGeometry = BufferGeometryUtils.mergeBufferGeometries([planeGeometry, new THREE.BufferGeometry().setFromPoints(planePointsDownardsTriangle)]);
       }
+
+      let colour = null;
+      if(expPoints[x+1][y+1] !== undefined){
+        colour = this.getColourForY(expPoints[x][y].y + (expPoints[x+1][y+1].y - expPoints[x][y].y)/2);
+      }
+      else{
+        colour = this.getColourForY(expPoints[x][y].y);
+      }
+      const material = new THREE.MeshBasicMaterial({color: colour, side: THREE.DoubleSide});
 
       return new THREE.Mesh(planeGeometry, material);
     }
