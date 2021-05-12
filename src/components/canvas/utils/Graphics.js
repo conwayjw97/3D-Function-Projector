@@ -63,7 +63,6 @@ export default class Graphics{
       this.scene.remove(this.expressionGroup);
       this.renderExpression();
     }
-    console.log(this.renderingFeatures);
   }
 
   renderAxes(){
@@ -71,15 +70,9 @@ export default class Graphics{
     this.renderLine(leftBottomBack, leftBottomFront, new THREE.LineBasicMaterial({color: blue}));
     this.renderLine(leftBottomBack, leftTopBack, new THREE.LineBasicMaterial({color: red}));
 
-    this.renderText("X", 6, 102.5, -100, -100, green);
-    this.renderText("Y", 6, -100, -100, 102.5, blue);
-    this.renderText("Z", 6, -100, 102.5, -100, red);
-
-    for(let i=-80; i<100; i+=20){
-      this.renderText(this.rangeScale(i, -100, 100, this.xRange[0], this.xRange[1]), 4, i, -105, -105, green);
-      this.renderText(this.rangeScale(i, -100, 100, this.yRange[0], this.yRange[1]), 4, -105, -105, i, blue);
-      this.renderText(this.rangeScale(i, -100, 100, this.zRange[0], this.zRange[1]), 4, -105, i, -105, red);
-    }
+    this.renderText("X", 102.5, -100, -100, green);
+    this.renderText("Y", -100, -100, 102.5, blue);
+    this.renderText("Z", -100, 102.5, -100, red);
 
     // this.renderLine(rightBottomBack, rightTopBack, new THREE.LineBasicMaterial({color: white}));
     // this.renderLine(rightTopBack, leftTopBack, new THREE.LineBasicMaterial({color: white}));
@@ -100,8 +93,8 @@ export default class Graphics{
     this.scene.add(line);
   }
 
-  renderText(string, size, x, y, z, color){
-    const text = new SpriteText(string, size, color);
+  renderText(string, x, y, z, color){
+    const text = new SpriteText(string, 6, color);
     text.position.x = x;
     text.position.y = y;
     text.position.z = z;
@@ -109,13 +102,32 @@ export default class Graphics{
     this.scene.add(text);
   }
 
+  createAxisUnit(group, string, x, y, z, color){
+    const text = new SpriteText(string, 4, color);
+    text.position.x = x;
+    text.position.y = y;
+    text.position.z = z;
+    text.fontFace = "Consolas";
+    group.add(text);
+    return group;
+  }
+
+  // TODO: Change the creation functions so you can just write group.add(function)
   renderExpression(){
     const expPoints = this.evaluateExpression();
 
     this.expressionGroup = new THREE.Group();
+
+    for(let i=-80; i<100; i+=20){
+      this.expressionGroup = this.createAxisUnit(this.expressionGroup, this.rangeScale(i, -100, 100, this.xRange[0], this.xRange[1]), i, -105, -105, green);
+      this.expressionGroup = this.createAxisUnit(this.expressionGroup, this.rangeScale(i, -100, 100, this.yRange[0], this.yRange[1]), -105, -105, i, blue);
+      this.expressionGroup = this.createAxisUnit(this.expressionGroup, this.rangeScale(i, -100, 100, this.zRange[0], this.zRange[1]), -105, i, -105, red);
+    }
+
     if(this.renderingFeatures["points"]){
       this.expressionGroup = this.createExpressionDots(this.expressionGroup, expPoints);
     }
+
     for(let x=0; x<expPoints.length; x++){
       for(let y=0; y<expPoints[x].length; y++){
         // this.renderText(x + ":" + y, expPoints[x][y].x, expPoints[x][y].y, expPoints[x][y].z, white);
