@@ -51,10 +51,11 @@ export default class Graphics{
     animate();
   }
 
-  updateProjection(expression, detail){
-    if(this.expression != expression || this.detail != detail){
+  updateProjection(expression, detail, ranges){
+    if(this.expression != expression || this.detail != detail || this.ranges != ranges){
       this.expression = expression;
       this.detail = detail;
+      this.ranges = ranges;
       this.scene.remove(this.expressionGroup);
       this.renderExpression();
     }
@@ -69,16 +70,16 @@ export default class Graphics{
     this.renderText("Z", -100, 102.5, -100, red);
     this.renderText("Y", -100, -100, 102.5, blue);
 
-    // this.renderLine(rightBottomBack, rightTopBack, new THREE.LineBasicMaterial({color: white}));
-    // this.renderLine(rightTopBack, leftTopBack, new THREE.LineBasicMaterial({color: white}));
-    // this.renderLine(leftTopBack, leftTopFront, new THREE.LineBasicMaterial({color: white}));
-    // this.renderLine(leftTopFront, leftTopFront, new THREE.LineBasicMaterial({color: white}));
-    // this.renderLine(leftTopFront, leftBottomFront, new THREE.LineBasicMaterial({color: white}));
-    // this.renderLine(leftTopFront, rightTopFront, new THREE.LineBasicMaterial({color: white}));
-    // this.renderLine(leftBottomFront, rightBottomFront, new THREE.LineBasicMaterial({color: white}));
-    // this.renderLine(rightBottomFront,  rightTopFront, new THREE.LineBasicMaterial({color: white}));
-    // this.renderLine(rightTopFront, rightTopBack, new THREE.LineBasicMaterial({color: white}));
-    // this.renderLine(rightBottomFront, rightBottomBack, new THREE.LineBasicMaterial({color: white}));
+    this.renderLine(rightBottomBack, rightTopBack, new THREE.LineBasicMaterial({color: white}));
+    this.renderLine(rightTopBack, leftTopBack, new THREE.LineBasicMaterial({color: white}));
+    this.renderLine(leftTopBack, leftTopFront, new THREE.LineBasicMaterial({color: white}));
+    this.renderLine(leftTopFront, leftTopFront, new THREE.LineBasicMaterial({color: white}));
+    this.renderLine(leftTopFront, leftBottomFront, new THREE.LineBasicMaterial({color: white}));
+    this.renderLine(leftTopFront, rightTopFront, new THREE.LineBasicMaterial({color: white}));
+    this.renderLine(leftBottomFront, rightBottomFront, new THREE.LineBasicMaterial({color: white}));
+    this.renderLine(rightBottomFront,  rightTopFront, new THREE.LineBasicMaterial({color: white}));
+    this.renderLine(rightTopFront, rightTopBack, new THREE.LineBasicMaterial({color: white}));
+    this.renderLine(rightBottomFront, rightBottomBack, new THREE.LineBasicMaterial({color: white}));
   }
 
   renderLine(startVec, endVec, material){
@@ -98,9 +99,9 @@ export default class Graphics{
   }
 
   renderExpression(){
-    this.expressionGroup = new THREE.Group();
     const expPoints = this.evaluateExpression();
 
+    this.expressionGroup = new THREE.Group();
     this.expressionGroup = this.createExpressionDots(this.expressionGroup, expPoints);
     for(let x=0; x<expPoints.length; x++){
       for(let y=0; y<expPoints[x].length; y++){

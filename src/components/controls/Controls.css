@@ -11,8 +11,8 @@
 
 .expression {
   position: absolute;
-  left: 20%;
-  right: 20%;
+  left: 0%;
+  right: 0%;
   bottom: 2%;
   pointer-events: auto;
 }

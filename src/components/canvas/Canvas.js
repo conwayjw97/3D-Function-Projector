@@ -16,17 +16,17 @@ function Canvas(props) {
   const graphicsControls = useRef(null);
 
   useEffect(() => {
-    const graphics = new Graphics(canvas.current, width, height, props.expression, props.detail, [-100, 100], [-100, 100], [-100, 100]);
+    const graphics = new Graphics(canvas.current, width, height, props.expression, props.detail, props.ranges[0], props.ranges[1], props.ranges[2]);
 
-    const updateProjection = (expression, detail) => {
-      graphics.updateProjection(expression, detail);
+    const updateProjection = (expression, detail, ranges) => {
+      graphics.updateProjection(expression, detail, ranges);
     }
 
     graphicsControls.current = {updateProjection};
   }, []);
 
   useEffect(() => {
-    graphicsControls.current.updateProjection(props.expression, props.detail);
+    graphicsControls.current.updateProjection(props.expression, props.detail, props.ranges);
   }, [props.updateCount]);
 
   return (

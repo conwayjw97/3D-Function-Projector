@@ -7,7 +7,7 @@ function App() {
   const [updateCount, setUpdateCount] = useState(0);
   const [detail, setDetail] = useState(50);
   const [expression, setExpression] = useState("1-abs(x+y)-abs(y-x)");
-  const [ranges, setRanges] = useState([[-100, 100], [-100, 100], [-100, 100]]);
+  const [ranges, setRanges] = useState([["-100", "100"], ["-100", "100"], ["-100", "100"]]);
 
   const handleDetailChange = (event) => {
     setDetail(event.target.value);
@@ -21,22 +21,22 @@ function App() {
     const newRanges = [...ranges];
     switch(event.target.id){
       case "lowerXRange":
-        newRanges[0][0] = parseInt(event.target.value);
+        newRanges[0][0] = event.target.value;
         break;
       case "upperXRange":
-        newRanges[0][1] = parseInt(event.target.value);
+        newRanges[0][1] = event.target.value;
         break;
       case "lowerYRange":
-        newRanges[1][0] = parseInt(event.target.value);
+        newRanges[1][0] = event.target.value;
         break;
       case "upperYRange":
-        newRanges[1][1] = parseInt(event.target.value);
+        newRanges[1][1] = event.target.value;
         break;
       case "lowerZRange":
-        newRanges[2][0] = parseInt(event.target.value);
+        newRanges[2][0] = event.target.value;
         break;
       case "upperZRange":
-        newRanges[2][1] = parseInt(event.target.value);
+        newRanges[2][1] = event.target.value;
         break;
     }
     setRanges(newRanges);
@@ -52,6 +52,7 @@ function App() {
       <Canvas
         detail={detail}
         expression={expression}
+        ranges={ranges}
         updateCount={updateCount}
       />
       <Controls
