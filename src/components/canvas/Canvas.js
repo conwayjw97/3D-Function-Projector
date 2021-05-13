@@ -27,7 +27,7 @@ function Canvas(props) {
 
   useEffect(() => {
     graphicsControls.current.updateProjection(props.expression, props.detail, props.ranges, props.renderingMethod);
-  }, [props.detail, props.ranges, props.renderingMethod, props.updateCount]);
+  }, [props.detail, props.renderingMethod, props.updateCount]);
 
   return (
     <canvas ref={canvas} width={width} height={height} className="canvas">

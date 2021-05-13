@@ -7,18 +7,11 @@ function Controls(props) {
   return (
     <Menu isOpen disableAutoFocus width={375}>
       <label className="centered large-print">
-          Expression
+          Projection
       </label>
-      <label className="centered large-print">
+      <label className="centered">
           Z =
           <input type="text" id="expression" style={{marginLeft: "0.25em"}} value={props.expression} onChange={props.handleExpressionChange} />
-      </label>
-      <label className="centered large-print underlined" style={{padding: "1em 0"}}>
-          <button onClick={props.handleUpdate}>Update</button>
-      </label>
-
-      <label className="centered large-print">
-          Axis Ranges
       </label>
       <label className="centered">
         X Range: [
@@ -34,22 +27,26 @@ function Controls(props) {
         <input type="text" id="upperYRange" value={props.ranges[1][1]} onChange={props.handleRangeChange} style={{width: "2.5em"}} />
         ]
       </label>
-      <label className="centered underlined" style={{padding: "1em 0"}}>
+      <label className="centered">
         Z Range: [
         <input type="text" id="lowerZRange" value={props.ranges[2][0]} onChange={props.handleRangeChange} style={{width: "2.5em"}} />
         ,
         <input type="text" id="upperZRange" value={props.ranges[2][1]} onChange={props.handleRangeChange} style={{width: "2.5em"}} />
         ]
       </label>
+      <label className="centered large-print underlined" style={{padding: "1em 0"}}>
+          <button onClick={props.handleUpdate}>Update</button>
+      </label>
 
       <label className="centered large-print">
-          Detail
+          Graphics
       </label>
-      <label className="centered underlined" style={{padding: "1em 0"}}>
+      <label className="centered" style={{padding: "1em 0"}}>
+        Detail:
         <input type="range" id="detail" name="detail" min="10" max="100" value={props.detail} onChange={props.handleDetailChange} />
       </label>
 
-      <label className="centered large-print underlined" style={{padding: "1em 0"}}>
+      <label className="centered underlined" style={{padding: "1em 0"}}>
           Render Method:
           <select id="angle-value-dropdown" style={{marginLeft: "0.25em"}} onChange={props.handleRenderingMethodChange}>
             <option value="vertices">Vertices</option>
