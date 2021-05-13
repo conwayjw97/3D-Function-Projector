@@ -91,24 +91,13 @@ div.underlined {
 
 /* Labels */
 label {
+  pointer-events:none;
   color: rgb(255, 255, 255);
-}
-
-label.centered {
-  padding-top: 1em;
-  text-align: center;
-}
-
-label.underlined {
-  border-bottom: 1px solid black;
-}
-
-label.large-print {
-  font: 25px Consolas;
 }
 
 /* Text Fields */
 input[type=text] {
+  pointer-events:auto;
   color: rgb(255, 255, 255);
   background-color: rgb(56, 59, 69);
   height: 100%;
@@ -124,6 +113,7 @@ input[type=text]:focus{
 
 /* Dropdowns */
 select {
+  pointer-events:auto;
   height: 100%;
   display: inline-block;
   border: 0;
@@ -133,11 +123,17 @@ select {
 
 /* Checkboxes */
 input[type=checkbox] {
+  pointer-events:auto;
   margin-right: 1em;
+}
+
+input[type=range] {
+  pointer-events:auto;
 }
 
 /* Buttons */
 button {
+  pointer-events:auto;
   transition-duration: 0.3s;
   color: rgb(255, 255, 255);
   background-color: rgb(56, 59, 69);
@@ -149,4 +145,17 @@ button {
 button:hover {
   background-color: rgb(255, 255, 255);
   color: rgb(56, 59, 69);
+}
+
+.centered {
+  padding-top: 1em;
+  text-align: center;
+}
+
+.underlined {
+  border-bottom: 1px solid black;
+}
+
+.large-print {
+  font: 25px Consolas;
 }

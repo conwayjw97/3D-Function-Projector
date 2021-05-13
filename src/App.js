@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import Canvas from './components/canvas/Canvas.js';
 import Controls from './components/controls/Controls.js';
-import './App.css';
+
+import { evaluate } from 'mathjs'
 
 function App() {
   const [updateCount, setUpdateCount] = useState(0);
   const [detail, setDetail] = useState(50);
   const [expression, setExpression] = useState("x^2+y^2");
   const [ranges, setRanges] = useState([["-100", "100"], ["-100", "100"], ["0", "20000"]]);
-  const [renderingMethod, setRenderingMethod] = useState({"points":false, "squares":false, "planes":true});
+  const [renderingMethod, setRenderingMethod] = useState("faces");
 
   const handleDetailChange = (event) => {
     setDetail(event.target.value);
@@ -46,22 +47,55 @@ function App() {
   }
 
   const handleRenderingMethodChange = (event) => {
-    switch(event.target.value){
-      case "vertices":
-        setRenderingMethod({"points":true, "squares":false, "planes":false});
-        break;
-      case "edges":
-        setRenderingMethod({"points":false, "squares":true, "planes":false});
-        break;
-      case "faces":
-        setRenderingMethod({"points":false, "squares":false, "planes":true});
-        break;
-      default:
-        break;
-    }
+    setRenderingMethod(event.target.value);
   }
 
   const handleUpdate = () => {
+    try{
+      const testExp = expression.replaceAll("x", "("+1+")").replaceAll("y", "("+1+")");
+      const testEval = evaluate(testExp);
+    } catch(e) {
+      alert("Error when solving for Z: " + e);
+    }
+
+    if(isNaN(parseInt(ranges[0][0]))){
+      alert("Lower X Range invalid");
+      return;
+    }
+    if(isNaN(parseInt(ranges[0][1]))){
+      alert("Upper X Range invalid");
+      return;
+    }
+    if(isNaN(parseInt(ranges[1][0]))){
+      alert("Lower Y Range invalid");
+      return;
+    }
+    if(isNaN(parseInt(ranges[1][1]))){
+      alert("Upper Y Range invalid");
+      return;
+    }
+    if(isNaN(parseInt(ranges[2][0]))){
+      alert("Lower Z Range invalid");
+      return;
+    }
+    if(isNaN(parseInt(ranges[2][1]))){
+      alert("Upper Z Range invalid");
+      return;
+    }
+
+    if(parseInt(ranges[0][0]) > parseInt(ranges[0][1])){
+      alert("Lower X Range must be less than Upper X Range.");
+      return;
+    }
+    if(parseInt(ranges[1][0]) > parseInt(ranges[1][1])){
+      alert("Lower Y Range must be less than Upper Y Range.");
+      return;
+    }
+    if(parseInt(ranges[2][0]) > parseInt(ranges[2][1])){
+      alert("Lower Z Range must be less than Upper Z Range.");
+      return;
+    }
+
     setUpdateCount(updateCount + 1);
   }
 
@@ -82,6 +116,7 @@ function App() {
         handleExpressionChange={handleExpressionChange}
         ranges={ranges}
         handleRangeChange={handleRangeChange}
+        renderingMethod={renderingMethod}
         handleRenderingMethodChange={handleRenderingMethodChange}
         handleUpdate={handleUpdate}
       />

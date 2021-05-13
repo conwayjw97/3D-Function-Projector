@@ -48,10 +48,10 @@ function Controls(props) {
       </label>
       <label className="centered underlined" style={{padding: "1em 0"}}>
           Render Method:
-          <select id="angle-value-dropdown" style={{marginLeft: "0.25em"}} onChange={props.handleRenderingMethodChange}>
+          <select id="angle-value-dropdown" value={props.renderingMethod} style={{marginLeft: "0.25em"}} onChange={props.handleRenderingMethodChange}>
             <option value="vertices">Vertices</option>
             <option value="edges">Edges</option>
-            <option selected value="faces">Faces</option>
+            <option value="faces">Faces</option>
           </select>
       </label>
 

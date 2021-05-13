@@ -99,19 +99,24 @@ export default class Graphics{
       this.expressionGroup.add(this.createAxisUnit(this.rangeScale(i, -100, 100, this.zRange[0], this.zRange[1]), -105, i, -105, red));
     }
 
-    if(this.renderingMethod["points"]){
+    if(this.renderingMethod === "vertices"){
       this.expressionGroup.add(this.createExpressionDots(expPoints));
     }
 
-    for(let x=0; x<expPoints.length; x++){
-      for(let y=0; y<expPoints[x].length; y++){
-        if(this.renderingMethod["squares"]){
+    if(this.renderingMethod === "edges"){
+      for(let x=0; x<expPoints.length; x++){
+        for(let y=0; y<expPoints[x].length; y++){
           const expSquares = this.createExpressionSquare(expPoints, x, y);
           if(expSquares != null){
             this.expressionGroup.add(expSquares);
           }
         }
-        if(this.renderingMethod["planes"]){
+      }
+    }
+
+    if(this.renderingMethod === "faces"){
+      for(let x=0; x<expPoints.length; x++){
+        for(let y=0; y<expPoints[x].length; y++){
           const expPlanes = this.createExpressionPlane(expPoints, x, y)
           if(expPlanes != null){
             this.expressionGroup.add(expPlanes);
@@ -132,36 +137,38 @@ export default class Graphics{
     const step = (this.xRange[1]-this.xRange[0])/this.detail;
 
     if(this.expression.includes("x") || this.expression.includes("y")){
-      for(let x=this.xRange[0]; x<=this.xRange[1]; x+=step){
-        let xEval = this.expression.replaceAll("x", "("+x+")");
-        let yPoints = [];
+      try{
+        for(let x=this.xRange[0]; x<=this.xRange[1]; x+=step){
+          let xEval = this.expression.replaceAll("x", "("+x+")");
+          let yPoints = [];
 
-        for(let y=this.yRange[0]; y<=this.yRange[1]; y+=step){
-          let zEval;
+          for(let y=this.yRange[0]; y<=this.yRange[1]; y+=step){
+            let zEval;
 
-          if(xEval.includes("y")){
-            let yEval = xEval.replaceAll("y", "("+y+")");
-            zEval = evaluate(yEval);
+            if(xEval.includes("y")){
+              let yEval = xEval.replaceAll("y", "("+y+")");
+              zEval = evaluate(yEval);
+            }
+            else{
+              zEval = evaluate(xEval);
+            }
+
+            if(zEval>=this.zRange[0] && zEval<=this.zRange[1]){
+              const xPos = this.rangeScale(x, this.xRange[0], this.xRange[1], -100, 100);
+              const yPos = this.rangeScale(zEval, this.zRange[0], this.zRange[1], -100, 100);
+              const zPos = this.rangeScale(y, this.yRange[0], this.yRange[1], -100, 100);
+              yPoints.push(new THREE.Vector3(xPos, yPos, zPos));
+            }
           }
-          else{
-            zEval = evaluate(xEval);
-          }
 
-          if(zEval>=this.zRange[0] && zEval<=this.zRange[1]){
-            const xPos = this.rangeScale(x, this.xRange[0], this.xRange[1], -100, 100);
-            const yPos = this.rangeScale(zEval, this.zRange[0], this.zRange[1], -100, 100);
-            const zPos = this.rangeScale(y, this.yRange[0], this.yRange[1], -100, 100);
-            yPoints.push(new THREE.Vector3(xPos, yPos, zPos));
+          if(yPoints.length > 0){
+            xPoints.push(yPoints);
           }
         }
-
-        if(yPoints.length > 0){
-          xPoints.push(yPoints);
-        }
+      } catch(e) {
+        alert("Error when solving for Z: " + e);
       }
     }
-
-    console.log([].concat.apply([], xPoints).length);
 
     return xPoints;
   }
