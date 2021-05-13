@@ -6,8 +6,8 @@ import './App.css';
 function App() {
   const [updateCount, setUpdateCount] = useState(0);
   const [detail, setDetail] = useState(50);
-  const [expression, setExpression] = useState("1-abs(x+y)-abs(y-x)");
-  const [ranges, setRanges] = useState([["-100", "100"], ["-100", "100"], ["-100", "100"]]);
+  const [expression, setExpression] = useState("x^2+y^2");
+  const [ranges, setRanges] = useState([["-100", "100"], ["-100", "100"], ["0", "20000"]]);
   const [renderingFeatures, setRenderingFeatures] = useState({"points":true, "squares":true, "planes":true});
 
   const handleDetailChange = (event) => {

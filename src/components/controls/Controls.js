@@ -5,7 +5,7 @@ import "./Controls.css";
 // TODO: Clean this up
 function Controls(props) {
   return (
-    <Menu isOpen width={375}>
+    <Menu isOpen disableAutoFocus width={375}>
       <label className="centered large-print">
           Expression
       </label>
@@ -63,6 +63,15 @@ function Controls(props) {
       <label className="centered underlined" style={{padding: "1em 0"}}>
         Planes:
         <input id="planesToggle" type="checkbox" defaultChecked onChange={props.handleRenderingFeatureChange} />
+      </label>
+
+      <label className="centered large-print">
+          Camera Instructions
+      </label>
+      <label className="centered underlined" style={{padding: "1em 0"}}>
+        Left click and hold to rotate the camera around the projection.
+        Right click and hold to move the camera sideways.
+        Scroll to move the camera forwards or backwards.
       </label>
     </Menu>
   );
