@@ -18,13 +18,13 @@ const leftBottomBack = new THREE.Vector3(-100, -100, -100);
 const leftBottomFront = new THREE.Vector3(-100, -100, 100);
 
 export default class Graphics{
-  constructor(canvas, width, height, expression, detail, ranges, renderingFeatures){
+  constructor(canvas, width, height, expression, detail, ranges, renderingMethod){
     this.expression = expression;
     this.detail = detail;
     this.xRange = [parseInt(ranges[0][0]), parseInt(ranges[0][1])];
     this.yRange = [parseInt(ranges[1][0]), parseInt(ranges[1][1])];
     this.zRange = [parseInt(ranges[2][0]), parseInt(ranges[2][1])];
-    this.renderingFeatures = renderingFeatures;
+    this.renderingMethod = renderingMethod;
 
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(45, width/height, 0.1, 1000);
@@ -49,14 +49,14 @@ export default class Graphics{
     animate();
   }
 
-  updateProjection(expression, detail, ranges, renderingFeatures){
-    if(this.expression !== expression || this.detail !== detail || this.ranges !== ranges || this.renderingFeatures !== renderingFeatures){
+  updateProjection(expression, detail, ranges, renderingMethod){
+    if(this.expression !== expression || this.detail !== detail || this.ranges !== ranges || this.renderingMethod !== renderingMethod){
       this.expression = expression;
       this.detail = detail;
       this.xRange = [parseInt(ranges[0][0]), parseInt(ranges[0][1])];
       this.yRange = [parseInt(ranges[1][0]), parseInt(ranges[1][1])];
       this.zRange = [parseInt(ranges[2][0]), parseInt(ranges[2][1])];
-      this.renderingFeatures = renderingFeatures;
+      this.renderingMethod = renderingMethod;
       this.scene.remove(this.expressionGroup);
       this.renderExpression();
     }
@@ -99,19 +99,19 @@ export default class Graphics{
       this.expressionGroup.add(this.createAxisUnit(this.rangeScale(i, -100, 100, this.zRange[0], this.zRange[1]), -105, i, -105, red));
     }
 
-    if(this.renderingFeatures["points"]){
+    if(this.renderingMethod["points"]){
       this.expressionGroup.add(this.createExpressionDots(expPoints));
     }
 
     for(let x=0; x<expPoints.length; x++){
       for(let y=0; y<expPoints[x].length; y++){
-        if(this.renderingFeatures["squares"]){
+        if(this.renderingMethod["squares"]){
           const expSquares = this.createExpressionSquare(expPoints, x, y);
           if(expSquares != null){
             this.expressionGroup.add(expSquares);
           }
         }
-        if(this.renderingFeatures["planes"]){
+        if(this.renderingMethod["planes"]){
           const expPlanes = this.createExpressionPlane(expPoints, x, y)
           if(expPlanes != null){
             this.expressionGroup.add(expPlanes);

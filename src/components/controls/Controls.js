@@ -49,20 +49,13 @@ function Controls(props) {
         <input type="range" id="detail" name="detail" min="10" max="100" value={props.detail} onChange={props.handleDetailChange} />
       </label>
 
-      <label className="centered large-print">
-          Render Features
-      </label>
-      <label className="centered">
-        Points:
-        <input id="pointsToggle" type="checkbox" defaultChecked onChange={props.handleRenderingFeatureChange} />
-      </label>
-      <label className="centered">
-        Squares:
-        <input id="squaresToggle" type="checkbox" defaultChecked onChange={props.handleRenderingFeatureChange} />
-      </label>
-      <label className="centered underlined" style={{padding: "1em 0"}}>
-        Planes:
-        <input id="planesToggle" type="checkbox" defaultChecked onChange={props.handleRenderingFeatureChange} />
+      <label className="centered large-print underlined" style={{padding: "1em 0"}}>
+          Render Method:
+          <select id="angle-value-dropdown" style={{marginLeft: "0.25em"}} onChange={props.handleRenderingMethodChange}>
+            <option value="vertices">Vertices</option>
+            <option value="edges">Edges</option>
+            <option selected value="faces">Faces</option>
+          </select>
       </label>
 
       <label className="centered large-print">

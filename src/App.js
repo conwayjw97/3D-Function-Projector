@@ -8,7 +8,7 @@ function App() {
   const [detail, setDetail] = useState(50);
   const [expression, setExpression] = useState("x^2+y^2");
   const [ranges, setRanges] = useState([["-100", "100"], ["-100", "100"], ["0", "20000"]]);
-  const [renderingFeatures, setRenderingFeatures] = useState({"points":true, "squares":true, "planes":true});
+  const [renderingMethod, setRenderingMethod] = useState({"points":false, "squares":false, "planes":true});
 
   const handleDetailChange = (event) => {
     setDetail(event.target.value);
@@ -45,22 +45,20 @@ function App() {
     setRanges(newRanges);
   }
 
-  const handleRenderingFeatureChange = (event) => {
-    const newRenderingFeatures = JSON.parse(JSON.stringify(renderingFeatures));
-    switch(event.target.id){
-      case "pointsToggle":
-        newRenderingFeatures["points"] = event.target.checked;
+  const handleRenderingMethodChange = (event) => {
+    switch(event.target.value){
+      case "vertices":
+        setRenderingMethod({"points":true, "squares":false, "planes":false});
         break;
-      case "squaresToggle":
-        newRenderingFeatures["squares"] = event.target.checked;
+      case "edges":
+        setRenderingMethod({"points":false, "squares":true, "planes":false});
         break;
-      case "planesToggle":
-        newRenderingFeatures["planes"] = event.target.checked;
+      case "faces":
+        setRenderingMethod({"points":false, "squares":false, "planes":true});
         break;
       default:
         break;
     }
-    setRenderingFeatures(newRenderingFeatures);
   }
 
   const handleUpdate = () => {
@@ -74,7 +72,7 @@ function App() {
         detail={detail}
         expression={expression}
         ranges={ranges}
-        renderingFeatures={renderingFeatures}
+        renderingMethod={renderingMethod}
         updateCount={updateCount}
       />
       <Controls
@@ -84,7 +82,7 @@ function App() {
         handleExpressionChange={handleExpressionChange}
         ranges={ranges}
         handleRangeChange={handleRangeChange}
-        handleRenderingFeatureChange={handleRenderingFeatureChange}
+        handleRenderingMethodChange={handleRenderingMethodChange}
         handleUpdate={handleUpdate}
       />
     </div>

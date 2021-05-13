@@ -16,7 +16,7 @@ function Canvas(props) {
   const graphicsControls = useRef(null);
 
   useEffect(() => {
-    const graphics = new Graphics(canvas.current, width, height, props.expression, props.detail, props.ranges, props.renderingFeatures);
+    const graphics = new Graphics(canvas.current, width, height, props.expression, props.detail, props.ranges, props.renderingMethod);
 
     const updateProjection = (expression, detail, ranges, renderingFeatures) => {
       graphics.updateProjection(expression, detail, ranges, renderingFeatures);
@@ -26,8 +26,8 @@ function Canvas(props) {
   }, []);
 
   useEffect(() => {
-    graphicsControls.current.updateProjection(props.expression, props.detail, props.ranges, props.renderingFeatures);
-  }, [props.detail, props.ranges, props.renderingFeatures, props.updateCount]);
+    graphicsControls.current.updateProjection(props.expression, props.detail, props.ranges, props.renderingMethod);
+  }, [props.detail, props.ranges, props.renderingMethod, props.updateCount]);
 
   return (
     <canvas ref={canvas} width={width} height={height} className="canvas">
