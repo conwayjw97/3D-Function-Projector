@@ -41,11 +41,11 @@ function Controls(props) {
       <label className="centered large-print">
           Graphics
       </label>
-      <label className="centered" style={{padding: "1em 0"}}>
-        Detail:
+      <label className="centered">
+        Max Vertices:
         <input type="range" id="detail" name="detail" min="10" max="100" value={props.detail} onChange={props.handleDetailChange} />
+        {props.detail * props.detail}
       </label>
-
       <label className="centered underlined" style={{padding: "1em 0"}}>
           Render Method:
           <select id="angle-value-dropdown" style={{marginLeft: "0.25em"}} onChange={props.handleRenderingMethodChange}>

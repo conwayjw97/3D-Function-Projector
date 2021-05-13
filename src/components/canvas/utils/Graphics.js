@@ -28,14 +28,14 @@ export default class Graphics{
 
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(45, width/height, 0.1, 1000);
-    this.camera.position.set(150, 100, 150);
+    this.camera.position.set(250, 150, 250);
 
     this.renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true});
     this.renderer.setSize(width, height);
     this.renderer.setClearColor(black);
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.target = new THREE.Vector3(0, 0, 0);
+    this.controls.target = new THREE.Vector3(0, 25, 0);
 
     this.renderAxes();
     this.renderExpression();
@@ -130,12 +130,15 @@ export default class Graphics{
   evaluateExpression(){
     let xPoints = [];
     const step = (this.xRange[1]-this.xRange[0])/this.detail;
+
     if(this.expression.includes("x") || this.expression.includes("y")){
       for(let x=this.xRange[0]; x<=this.xRange[1]; x+=step){
         let xEval = this.expression.replaceAll("x", "("+x+")");
         let yPoints = [];
+
         for(let y=this.yRange[0]; y<=this.yRange[1]; y+=step){
           let zEval;
+
           if(xEval.includes("y")){
             let yEval = xEval.replaceAll("y", "("+y+")");
             zEval = evaluate(yEval);
@@ -143,6 +146,7 @@ export default class Graphics{
           else{
             zEval = evaluate(xEval);
           }
+
           if(zEval>=this.zRange[0] && zEval<=this.zRange[1]){
             const xPos = this.rangeScale(x, this.xRange[0], this.xRange[1], -100, 100);
             const yPos = this.rangeScale(zEval, this.zRange[0], this.zRange[1], -100, 100);
@@ -150,11 +154,15 @@ export default class Graphics{
             yPoints.push(new THREE.Vector3(xPos, yPos, zPos));
           }
         }
+
         if(yPoints.length > 0){
           xPoints.push(yPoints);
         }
       }
     }
+
+    console.log([].concat.apply([], xPoints).length);
+
     return xPoints;
   }
 
