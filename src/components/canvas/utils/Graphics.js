@@ -128,7 +128,7 @@ export default class Graphics{
   }
 
   evaluateExpression(){
-    let expPoints = [];
+    let xPoints = [];
     const step = (this.xRange[1]-this.xRange[0])/this.detail;
     if(this.expression.includes("x") || this.expression.includes("y")){
       for(let x=this.xRange[0]; x<=this.xRange[1]; x+=step){
@@ -151,11 +151,11 @@ export default class Graphics{
           }
         }
         if(yPoints.length > 0){
-          expPoints.push(yPoints);
+          xPoints.push(yPoints);
         }
       }
     }
-    return expPoints;
+    return xPoints;
   }
 
   createAxisUnit(string, x, y, z, color){

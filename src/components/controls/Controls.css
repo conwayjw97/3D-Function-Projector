@@ -1,22 +1,113 @@
-.controls {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
+/* Position and sizing of burger button */
+.bm-burger-button {
+  position: fixed;
+  width: 36px;
+  height: 30px;
+  left: 36px;
+  top: 36px;
+}
+
+/* Position and sizing of clickable cross button */
+.bm-cross-button {
+  height: 24px;
+  width: 24px;
+}
+
+/* Color/shape of burger icon bars */
+.bm-burger-bars {
+  background: rgb(161, 161, 161);
+}
+
+/* Color/shape of burger icon bars on hover*/
+.bm-burger-bars-hover {
+  background: rgb(255, 255, 255);
+}
+
+/* Color/shape of close button cross */
+.bm-cross {
+  background: rgb(255, 255, 255);
+}
+
+/*
+Sidebar wrapper styles
+Note: Beware of modifying this element as it can break the animations - you should not need to touch it in most cases
+*/
+.bm-menu-wrap {
+  position: fixed;
   height: 100%;
-  pointer-events: none;
-  font: 25px Consolas;
+  top: 0px;
+}
+
+/* General sidebar styles */
+.bm-menu {
+  background: rgb(64, 70, 84);
+  font: 18px Consolas;
+  padding: 1em 1em 0;
+}
+
+/* Morph shape necessary with bubble or elastic */
+.bm-morph-shape {
+  fill: rgb(161, 161, 161);
+}
+
+/* Wrapper for item list */
+.bm-item-list {
+}
+
+/* Individual item */
+.bm-item {
+  display: inline-block;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Divs */
+div.centered {
+  padding-top: 1em;
+  text-align: center;
+}
+
+div.underlined {
+  border-bottom: 1px solid black;
+}
+
+/* Labels */
+label {
   color: rgb(255, 255, 255);
 }
 
-.expression {
-  position: absolute;
-  left: 0%;
-  right: 0%;
-  bottom: 2%;
-  pointer-events: auto;
+label.centered {
+  padding-top: 1em;
+  text-align: center;
 }
 
+label.underlined {
+  border-bottom: 1px solid black;
+}
+
+label.large-print {
+  font: 25px Consolas;
+}
+
+/* Text Fields */
 input[type=text] {
   color: rgb(255, 255, 255);
   background-color: rgb(56, 59, 69);
@@ -24,14 +115,28 @@ input[type=text] {
   display: inline-block;
   border: 0;
   border-radius: 4px;
-  font: 25px Consolas;
-  margin: 0 10px;
+  font: 20px Consolas;
 }
 
 input[type=text]:focus{
     outline: none;
 }
 
+/* Dropdowns */
+select {
+  height: 100%;
+  display: inline-block;
+  border: 0;
+  border-radius: 4px;
+  font: 18px Consolas;
+}
+
+/* Checkboxes */
+input[type=checkbox] {
+  margin-right: 1em;
+}
+
+/* Buttons */
 button {
   transition-duration: 0.3s;
   color: rgb(255, 255, 255);
