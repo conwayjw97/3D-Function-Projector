@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/3D-Function-Projector/static/css/main.098583f4.chunk.css",
-    "main.js": "/3D-Function-Projector/static/js/main.2b94cc06.chunk.js",
-    "main.js.map": "/3D-Function-Projector/static/js/main.2b94cc06.chunk.js.map",
+    "main.js": "/3D-Function-Projector/static/js/main.cb9e47f3.chunk.js",
+    "main.js.map": "/3D-Function-Projector/static/js/main.cb9e47f3.chunk.js.map",
     "runtime-main.js": "/3D-Function-Projector/static/js/runtime-main.0956123f.js",
     "runtime-main.js.map": "/3D-Function-Projector/static/js/runtime-main.0956123f.js.map",
     "static/js/2.0e0e43eb.chunk.js": "/3D-Function-Projector/static/js/2.0e0e43eb.chunk.js",
@@ -15,6 +15,6 @@
     "static/js/runtime-main.0956123f.js",
     "static/js/2.0e0e43eb.chunk.js",
     "static/css/main.098583f4.chunk.css",
-    "static/js/main.2b94cc06.chunk.js"
+    "static/js/main.cb9e47f3.chunk.js"
   ]
 }
