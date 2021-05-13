@@ -8,9 +8,9 @@ import { evaluate } from 'mathjs'
 
 const black = "rgb(40, 44, 52)";
 const white = "rgb(255, 255, 255)";
-const green = "rgb(0, 255, 0)";
-const blue = "rgb(0, 0, 255)";
-const red = "rgb(255, 0, 43)";
+const green = "rgb(25, 207, 41)"
+const blue = "rgb(35, 151, 235)";
+const red = "rgb(199, 24, 24)";
 
 const whiteMaterial = new THREE.LineBasicMaterial({color: white});
 const greenMaterial = new THREE.LineBasicMaterial({color: green});
