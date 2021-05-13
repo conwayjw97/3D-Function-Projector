@@ -12,6 +12,11 @@ const green = "rgb(0, 255, 0)";
 const blue = "rgb(0, 0, 255)";
 const red = "rgb(255, 0, 43)";
 
+const whiteMaterial = new THREE.LineBasicMaterial({color: white});
+const greenMaterial = new THREE.LineBasicMaterial({color: green});
+const blueMaterial = new THREE.LineBasicMaterial({color: blue});
+const redMaterial  = new THREE.LineBasicMaterial({color: red});
+
 const rightBottomBack = new THREE.Vector3(100, -100, -100);
 const leftTopBack = new THREE.Vector3(-100, 100, -100);
 const leftBottomBack = new THREE.Vector3(-100, -100, -100);
@@ -63,29 +68,13 @@ export default class Graphics{
   }
 
   renderAxes(){
-    this.renderLine(leftBottomBack, rightBottomBack, new THREE.LineBasicMaterial({color: green}));
-    this.renderLine(leftBottomBack, leftBottomFront, new THREE.LineBasicMaterial({color: blue}));
-    this.renderLine(leftBottomBack, leftTopBack, new THREE.LineBasicMaterial({color: red}));
+    this.scene.add(this.createLine(leftBottomBack, rightBottomBack, greenMaterial));
+    this.scene.add(this.createLine(leftBottomBack, leftBottomFront, blueMaterial));
+    this.scene.add(this.createLine(leftBottomBack, leftTopBack, redMaterial));
 
-    this.renderText("X", 102.5, -100, -100, green);
-    this.renderText("Y", -100, -100, 102.5, blue);
-    this.renderText("Z", -100, 102.5, -100, red);
-  }
-
-  renderLine(startVec, endVec, material){
-    const linePoints = [startVec, endVec];
-    const lineGeometry = new THREE.BufferGeometry().setFromPoints(linePoints);
-    const line = new THREE.Line(lineGeometry, material);
-    this.scene.add(line);
-  }
-
-  renderText(string, x, y, z, color){
-    const text = new SpriteText(string, 6, color);
-    text.position.x = x;
-    text.position.y = y;
-    text.position.z = z;
-    text.fontFace = "Consolas";
-    this.scene.add(text);
+    this.scene.add(this.createText("X", 6, 102.5, -100, -100, green));
+    this.scene.add(this.createText("Y", 6, -100, -100, 102.5, blue));
+    this.scene.add(this.createText("Z", 6, -100, 102.5, -100, red));
   }
 
   renderExpression(){
@@ -93,10 +82,15 @@ export default class Graphics{
 
     this.expressionGroup = new THREE.Group();
 
+    const startVec = new THREE.Vector3(0, 0, 0);
+    const endVec = new THREE.Vector3(0, 0, 0);
     for(let i=-80; i<100; i+=20){
-      this.expressionGroup.add(this.createAxisUnit(this.rangeScale(i, -100, 100, this.xRange[0], this.xRange[1]), i, -105, -105, green));
-      this.expressionGroup.add(this.createAxisUnit(this.rangeScale(i, -100, 100, this.yRange[0], this.yRange[1]), -105, -105, i, blue));
-      this.expressionGroup.add(this.createAxisUnit(this.rangeScale(i, -100, 100, this.zRange[0], this.zRange[1]), -105, i, -105, red));
+      this.expressionGroup.add(this.createText(this.rangeScale(i, -100, 100, this.xRange[0], this.xRange[1]), 4, i, -100, -110, green));
+      this.expressionGroup.add(this.createLine(startVec.set(i, -100, -100), endVec.set(i, -100, -105), greenMaterial));
+      this.expressionGroup.add(this.createText(this.rangeScale(i, -100, 100, this.yRange[0], this.yRange[1]), 4, -110, -100, i, blue));
+      this.expressionGroup.add(this.createLine(startVec.set(-100, -100, i), endVec.set(-105, -100, i), blueMaterial));
+      this.expressionGroup.add(this.createText(this.rangeScale(i, -100, 100, this.zRange[0], this.zRange[1]), 4, -110, i, -110, red));
+      this.expressionGroup.add(this.createLine(startVec.set(-100, i, -100), endVec.set(-105, i, -105), redMaterial));
     }
 
     if(this.renderingMethod === "vertices"){
@@ -173,6 +167,22 @@ export default class Graphics{
     return xPoints;
   }
 
+  createLine(startVec, endVec, material){
+    const linePoints = [startVec, endVec];
+    const lineGeometry = new THREE.BufferGeometry().setFromPoints(linePoints);
+    const line = new THREE.Line(lineGeometry, material);
+    return line;
+  }
+
+  createText(string, size, x, y, z, color){
+    const text = new SpriteText(string, size, color);
+    text.position.x = x;
+    text.position.y = y;
+    text.position.z = z;
+    text.fontFace = "Consolas";
+    return text;
+  }
+
   createAxisUnit(string, x, y, z, color){
     const text = new SpriteText(string, 4, color);
     text.position.x = x;
@@ -193,8 +203,6 @@ export default class Graphics{
     const isValidPoint = expPoints[x+1] !== undefined;
 
     if(isValidPoint){
-      const material = new THREE.LineBasicMaterial({color: white});
-
       const isWholeSquare = expPoints[x+1][y] !== undefined && expPoints[x+1][y] !== undefined && expPoints[x+1][y+1] !== undefined && expPoints[x][y+1] !== undefined;
       const isClosingTriangle = expPoints[x+1][y] !== undefined && expPoints[x+1][y+1] !== undefined;
       const isClosingLine = expPoints[x][y+1] !== undefined && expPoints[x+1][y] !== undefined;
@@ -212,7 +220,7 @@ export default class Graphics{
 
       if(points !== null){
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        return new THREE.Line(geometry, material);
+        return new THREE.Line(geometry, whiteMaterial);
       }
     }
 

@@ -14,21 +14,21 @@ function Controls(props) {
           <input type="text" id="expression" style={{marginLeft: "0.25em"}} value={props.expression} onChange={props.handleExpressionChange} />
       </label>
       <label className="centered">
-        X Range: [
+        X Range:[
         <input type="text" id="lowerXRange" value={props.ranges[0][0]} onChange={props.handleRangeChange} style={{width: "2.5em"}} />
         ,
         <input type="text" id="upperXRange" value={props.ranges[0][1]} onChange={props.handleRangeChange} style={{width: "2.5em"}} />
         ]
       </label>
       <label className="centered">
-        Y Range: [
+        Y Range:[
         <input type="text" id="lowerYRange" value={props.ranges[1][0]} onChange={props.handleRangeChange} style={{width: "2.5em"}} />
         ,
         <input type="text" id="upperYRange" value={props.ranges[1][1]} onChange={props.handleRangeChange} style={{width: "2.5em"}} />
         ]
       </label>
       <label className="centered">
-        Z Range: [
+        Z Range:[
         <input type="text" id="lowerZRange" value={props.ranges[2][0]} onChange={props.handleRangeChange} style={{width: "2.5em"}} />
         ,
         <input type="text" id="upperZRange" value={props.ranges[2][1]} onChange={props.handleRangeChange} style={{width: "2.5em"}} />
@@ -46,7 +46,7 @@ function Controls(props) {
         <input type="range" id="detail" name="detail" min="10" max="100" value={props.detail} onChange={props.handleDetailChange} />
         {props.detail * props.detail}
       </label>
-      <label className="centered underlined" style={{padding: "1em 0"}}>
+      <label className="centered">
           Render Method:
           <select id="angle-value-dropdown" value={props.renderingMethod} style={{marginLeft: "0.25em"}} onChange={props.handleRenderingMethodChange}>
             <option value="vertices">Vertices</option>
@@ -54,9 +54,12 @@ function Controls(props) {
             <option value="faces">Faces</option>
           </select>
       </label>
+      <label className="centered underlined" style={{padding: "1em 0"}}>
+        Adjust the Max Vertices when using the Vertices rendering method for smoothest feedback.
+      </label>
 
       <label className="centered large-print">
-          Camera Instructions
+          Camera
       </label>
       <label className="centered underlined" style={{padding: "1em 0"}}>
         Left click and hold to rotate the camera around the projection.
