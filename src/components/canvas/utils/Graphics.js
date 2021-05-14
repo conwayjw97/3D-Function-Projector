@@ -86,10 +86,11 @@ export default class Graphics{
     const endVec = new THREE.Vector3(0, 0, 0);
     for(let i=-80; i<100; i+=20){
       this.expressionGroup.add(this.createText(this.rangeScale(i, -100, 100, this.xRange[0], this.xRange[1]), 4, i, -100, -110, green));
-      this.expressionGroup.add(this.createLine(startVec.set(i, -100, -100), endVec.set(i, -100, -105), greenMaterial));
       this.expressionGroup.add(this.createText(this.rangeScale(i, -100, 100, this.yRange[0], this.yRange[1]), 4, -110, -100, i, blue));
-      this.expressionGroup.add(this.createLine(startVec.set(-100, -100, i), endVec.set(-105, -100, i), blueMaterial));
       this.expressionGroup.add(this.createText(this.rangeScale(i, -100, 100, this.zRange[0], this.zRange[1]), 4, -110, i, -110, red));
+
+      this.expressionGroup.add(this.createLine(startVec.set(i, -100, -100), endVec.set(i, -100, -105), greenMaterial));
+      this.expressionGroup.add(this.createLine(startVec.set(-100, -100, i), endVec.set(-105, -100, i), blueMaterial));
       this.expressionGroup.add(this.createLine(startVec.set(-100, i, -100), endVec.set(-105, i, -105), redMaterial));
     }
 

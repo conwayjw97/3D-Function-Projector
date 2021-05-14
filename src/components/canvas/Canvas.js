@@ -30,9 +30,14 @@ function Canvas(props) {
   }, [props.detail, props.renderingMethod, props.updateCount]);
 
   return (
-    <canvas ref={canvas} width={width} height={height} className="canvas">
-      <p>Your browser doesn't support canvas.</p>
-    </canvas>
+    <div>
+      <div style={{position: "absolute", top: "0", left: "0", width:"100%", height:"100%", pointerEvents: "none", margin: "auto"}}>
+          Loading...
+      </div>
+      <canvas ref={canvas} width={width} height={height} className="canvas">
+        <p>Your browser doesn't support canvas.</p>
+      </canvas>
+    </div>
   );
 }
 
