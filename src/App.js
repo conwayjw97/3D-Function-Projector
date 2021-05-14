@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Canvas from './components/canvas/Canvas.js';
 import Controls from './components/controls/Controls.js';
 
@@ -10,6 +10,10 @@ function App() {
   const [expression, setExpression] = useState("x^2+y^2");
   const [ranges, setRanges] = useState([["-100", "100"], ["-100", "100"], ["0", "20000"]]);
   const [renderingMethod, setRenderingMethod] = useState("faces");
+
+  useEffect(() => {
+    document.title = "Function Projector"
+  }, []);
 
   const handleDetailChange = (event) => {
     setDetail(event.target.value);
