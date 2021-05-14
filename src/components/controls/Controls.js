@@ -53,20 +53,20 @@ function Controls(props) {
           Graphics
       </label>
       <label className="centered">
-        Max Vertices:
-        <input type="range" disabled={detailSliderDisabled} id="detail" name="detail" min="10" max="100" value={props.detail} onChange={props.handleDetailChange} />
-        {props.detail * props.detail}
-      </label>
-      <label className="centered">
-        Max Vertices slider can only be used with the Vertices rendering method.
-      </label>
-      <label className="centered underlined" style={{padding: "1em 0"}}>
           Render Method:
           <select id="render-method-dropdown" value={props.renderingMethod} style={{marginLeft: "0.25em"}} onChange={handleRenderingMethodChange}>
             <option value="vertices">Vertices</option>
             <option value="edges">Edges</option>
             <option value="faces">Faces</option>
           </select>
+      </label>
+      <label className="centered">
+        Max Vertices:
+        <input type="range" disabled={detailSliderDisabled} id="detail" name="detail" min="10" max="100" value={props.detail} onChange={props.handleDetailChange} />
+        {props.detail * props.detail}
+      </label>
+      <label className="centered underlined" style={{padding: "1em 0"}}>
+        Max Vertices slider is only enabled with the Vertices rendering method.
       </label>
 
       <label className="centered large-print">
