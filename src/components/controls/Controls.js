@@ -1,9 +1,20 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import { slide as Menu } from 'react-burger-menu';
 import "./Controls.css";
 
 // TODO: Clean this up
 function Controls(props) {
+  const [detailSliderDisabled, setDetailSliderDisabled] = useState(true);
+
+  const handleRenderingMethodChange = (event) => {
+    props.handleRenderingMethodChange(event);
+    if(event.target.value === "vertices"){
+      setDetailSliderDisabled(false);
+    } else {
+      setDetailSliderDisabled(true);
+    }
+  }
+
   return (
     <Menu isOpen disableAutoFocus width={375}>
       <label className="centered large-print">
@@ -43,19 +54,19 @@ function Controls(props) {
       </label>
       <label className="centered">
         Max Vertices:
-        <input type="range" id="detail" name="detail" min="10" max="100" value={props.detail} onChange={props.handleDetailChange} />
+        <input type="range" disabled={detailSliderDisabled} id="detail" name="detail" min="10" max="100" value={props.detail} onChange={props.handleDetailChange} />
         {props.detail * props.detail}
       </label>
       <label className="centered">
+        Max Vertices slider can only be used with the Vertices rendering method.
+      </label>
+      <label className="centered underlined" style={{padding: "1em 0"}}>
           Render Method:
-          <select id="angle-value-dropdown" value={props.renderingMethod} style={{marginLeft: "0.25em"}} onChange={props.handleRenderingMethodChange}>
+          <select id="render-method-dropdown" value={props.renderingMethod} style={{marginLeft: "0.25em"}} onChange={handleRenderingMethodChange}>
             <option value="vertices">Vertices</option>
             <option value="edges">Edges</option>
             <option value="faces">Faces</option>
           </select>
-      </label>
-      <label className="centered underlined" style={{padding: "1em 0"}}>
-        Adjust the Max Vertices when using the Vertices rendering method for smoothest feedback.
       </label>
 
       <label className="centered large-print">
