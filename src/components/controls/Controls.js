@@ -66,7 +66,7 @@ function Controls(props) {
         {props.detail * props.detail}
       </label>
       <label className="centered underlined" style={{padding: "1em 0"}}>
-        Max Vertices slider is only enabled with the Vertices rendering method.
+        Max Vertices slider can only be used with the Vertices rendering method.
       </label>
 
       <label className="centered large-print">
@@ -75,7 +75,7 @@ function Controls(props) {
       <label className="centered underlined" style={{padding: "1em 0"}}>
         Left click and hold to rotate the camera around the projection.
         Right click and hold to move the camera sideways.
-        Scroll to move the camera forwards or backwards.
+        Scroll or hold middle mouse to move the camera forwards or backwards.
       </label>
     </Menu>
   );
