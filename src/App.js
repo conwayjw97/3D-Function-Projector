@@ -7,9 +7,9 @@ import { evaluate } from 'mathjs'
 function App() {
   const [updateCount, setUpdateCount] = useState(0);
   const [detail, setDetail] = useState(50);
-  const [expression, setExpression] = useState("");
-  const [ranges, setRanges] = useState([["-100", "100"], ["-100", "100"], ["-100", "100"]]);
-  const [renderingMethod, setRenderingMethod] = useState("vertices");
+  const [expression, setExpression] = useState("x^2 + y^2");
+  const [ranges, setRanges] = useState([["-100", "100"], ["-100", "100"], ["0", "20000"]]);
+  const [renderingMethod, setRenderingMethod] = useState("faces");
 
   useEffect(() => {
     document.title = "Function Projector"
