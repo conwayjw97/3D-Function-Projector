@@ -4,7 +4,7 @@ import "./Controls.css";
 
 // TODO: Clean this up
 function Controls(props) {
-  const [detailSliderDisabled, setDetailSliderDisabled] = useState(true);
+  const [detailSliderDisabled, setDetailSliderDisabled] = useState(false);
 
   const handleRenderingMethodChange = (event) => {
     props.handleRenderingMethodChange(event);

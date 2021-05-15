@@ -32,7 +32,7 @@ export default class Graphics{
     this.renderingMethod = renderingMethod;
 
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(45, width/height, 0.1, 10000);
+    this.camera = new THREE.PerspectiveCamera(45, width/height, 0.1, 1000);
     this.camera.position.set(250, 150, 250);
 
     this.renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true});
