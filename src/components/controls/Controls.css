@@ -154,6 +154,7 @@ button:hover {
 
 .underlined {
   border-bottom: 1px solid black;
+  padding: 1em 0;
 }
 
 .large-print {
@@ -162,4 +163,8 @@ button:hover {
 
 .small-left-margin {
   margin-left: 0.25em;
+}
+
+.range-input {
+  width: 3em;
 }

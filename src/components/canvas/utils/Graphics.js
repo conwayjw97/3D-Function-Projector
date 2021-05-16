@@ -23,8 +23,9 @@ const leftBottomBack = new THREE.Vector3(-100, -100, -100);
 const leftBottomFront = new THREE.Vector3(-100, -100, 100);
 
 export default class Graphics{
-  constructor(canvas, width, height, expression, detail, ranges, renderingMethod){
+  constructor(canvas, width, height, expression, axes, detail, ranges, renderingMethod){
     this.expression = expression;
+    this.axes = axes;
     this.detail = detail;
     this.xRange = [parseInt(ranges[0][0]), parseInt(ranges[0][1])];
     this.yRange = [parseInt(ranges[1][0]), parseInt(ranges[1][1])];
@@ -42,8 +43,7 @@ export default class Graphics{
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.target = new THREE.Vector3(0, 25, 0);
 
-    this.renderAxes();
-    this.renderExpression();
+    this.render();
 
     const animate = () => {
     	requestAnimationFrame(animate);
@@ -54,44 +54,45 @@ export default class Graphics{
     animate();
   }
 
-  async updateProjection(expression, detail, ranges, renderingMethod){
-    if(this.expression !== expression || this.detail !== detail || this.ranges !== ranges || this.renderingMethod !== renderingMethod){
+  update(expression, axes, detail, ranges, renderingMethod){
+    if(this.expression !== expression || this.axes !== axes || this.detail !== detail || this.ranges !== ranges || this.renderingMethod !== renderingMethod){
       this.expression = expression;
+      this.axes = axes;
       this.detail = detail;
       this.xRange = [parseInt(ranges[0][0]), parseInt(ranges[0][1])];
       this.yRange = [parseInt(ranges[1][0]), parseInt(ranges[1][1])];
       this.zRange = [parseInt(ranges[2][0]), parseInt(ranges[2][1])];
       this.renderingMethod = renderingMethod;
       this.scene.remove(this.expressionGroup);
-      this.renderExpression();
+      this.render();
     }
   }
 
-  renderAxes(){
-    this.scene.add(this.createLine(leftBottomBack, rightBottomBack, greenMaterial));
-    this.scene.add(this.createLine(leftBottomBack, leftBottomFront, blueMaterial));
-    this.scene.add(this.createLine(leftBottomBack, leftTopBack, redMaterial));
-
-    this.scene.add(this.createText("X", 6, 102.5, -100, -100, green));
-    this.scene.add(this.createText("Y", 6, -100, -100, 102.5, blue));
-    this.scene.add(this.createText("Z", 6, -100, 102.5, -100, red));
-  }
-
-  renderExpression(){
+  render(){
     const expPoints = this.evaluateExpression();
 
     this.expressionGroup = new THREE.Group();
 
-    const startVec = new THREE.Vector3(0, 0, 0);
-    const endVec = new THREE.Vector3(0, 0, 0);
-    for(let i=-80; i<100; i+=20){
-      this.expressionGroup.add(this.createText(this.rangeScale(i, -100, 100, this.xRange[0], this.xRange[1]), 4, i, -100, -110, green));
-      this.expressionGroup.add(this.createText(this.rangeScale(i, -100, 100, this.yRange[0], this.yRange[1]), 4, -110, -100, i, blue));
-      this.expressionGroup.add(this.createText(this.rangeScale(i, -100, 100, this.zRange[0], this.zRange[1]), 4, -110, i, -110, red));
+    if(this.axes){
+      this.expressionGroup.add(this.createLine(leftBottomBack, rightBottomBack, greenMaterial));
+      this.expressionGroup.add(this.createLine(leftBottomBack, leftBottomFront, blueMaterial));
+      this.expressionGroup.add(this.createLine(leftBottomBack, leftTopBack, redMaterial));
 
-      this.expressionGroup.add(this.createLine(startVec.set(i, -100, -100), endVec.set(i, -100, -105), greenMaterial));
-      this.expressionGroup.add(this.createLine(startVec.set(-100, -100, i), endVec.set(-105, -100, i), blueMaterial));
-      this.expressionGroup.add(this.createLine(startVec.set(-100, i, -100), endVec.set(-105, i, -105), redMaterial));
+      this.expressionGroup.add(this.createText("X", 6, 102.5, -100, -100, green));
+      this.expressionGroup.add(this.createText("Y", 6, -100, -100, 102.5, blue));
+      this.expressionGroup.add(this.createText("Z", 6, -100, 102.5, -100, red));
+
+      const startVec = new THREE.Vector3(0, 0, 0);
+      const endVec = new THREE.Vector3(0, 0, 0);
+      for(let i=-80; i<100; i+=20){
+        this.expressionGroup.add(this.createText(this.rangeScale(i, -100, 100, this.xRange[0], this.xRange[1]), 4, i, -100, -110, green));
+        this.expressionGroup.add(this.createText(this.rangeScale(i, -100, 100, this.yRange[0], this.yRange[1]), 4, -110, -100, i, blue));
+        this.expressionGroup.add(this.createText(this.rangeScale(i, -100, 100, this.zRange[0], this.zRange[1]), 4, -110, i, -110, red));
+
+        this.expressionGroup.add(this.createLine(startVec.set(i, -100, -100), endVec.set(i, -100, -105), greenMaterial));
+        this.expressionGroup.add(this.createLine(startVec.set(-100, -100, i), endVec.set(-105, -100, i), blueMaterial));
+        this.expressionGroup.add(this.createLine(startVec.set(-100, i, -100), endVec.set(-105, i, -105), redMaterial));
+      }
     }
 
     if(this.renderingMethod === "vertices"){

@@ -18,26 +18,23 @@ function Canvas(props) {
 
   useEffect(() => {
     setLoading(true);
-    const graphics = new Graphics(canvas.current, width, height, props.expression, props.detail, props.ranges, props.renderingMethod);
+    const graphics = new Graphics(canvas.current, width, height, props.expression, props.axes, props.detail, props.ranges, props.renderingMethod);
     setLoading(false);
 
-    const updateProjection = async (expression, detail, ranges, renderingFeatures) => {
+    const update = (expression, axes, detail, ranges, renderingFeatures) => {
       setLoading(true);
-      console.log(1);
-      await graphics.updateProjection(expression, detail, ranges, renderingFeatures);
+      graphics.update(expression, axes, detail, ranges, renderingFeatures);
       setLoading(false);
-      console.log(2);
     }
 
-    graphicsControls.current = {updateProjection};
+    graphicsControls.current = {update};
   }, []);
 
   useEffect(() => {
-    graphicsControls.current.updateProjection(props.expression, props.detail, props.ranges, props.renderingMethod);
-  }, [props.detail, props.renderingMethod, props.updateCount]);
+    graphicsControls.current.update(props.expression, props.axes, props.detail, props.ranges, props.renderingMethod);
+  }, [props.axes, props.detail, props.renderingMethod, props.updateCount]);
 
   const getLoadingMessage = () => {
-    console.log(loading)
     if(loading){
       return (
         <div style={{position: "absolute", top: "50%", left: "50%", pointerEvents: "none", margin: "auto", color: "rgb(255, 255, 255)", font: "60px Consolas", transform: "translate(-50%, -50%)"}}>

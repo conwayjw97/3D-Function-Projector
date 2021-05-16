@@ -9,6 +9,7 @@ function App() {
   const [detail, setDetail] = useState(50);
   const [expression, setExpression] = useState("x^2 + y^2");
   const [ranges, setRanges] = useState([["-100", "100"], ["-100", "100"], ["0", "20000"]]);
+  const [axes, setAxes] = useState(true);
   const [renderingMethod, setRenderingMethod] = useState("faces");
 
   useEffect(() => {
@@ -48,6 +49,10 @@ function App() {
         break;
     }
     setRanges(newRanges);
+  }
+
+  const handleAxesChange = (event) => {
+    setAxes(event.target.checked);
   }
 
   const handleRenderingMethodChange = (event) => {
@@ -110,6 +115,7 @@ function App() {
         detail={detail}
         expression={expression}
         ranges={ranges}
+        axes={axes}
         renderingMethod={renderingMethod}
         updateCount={updateCount}
       />
@@ -120,6 +126,7 @@ function App() {
         handleExpressionChange={handleExpressionChange}
         ranges={ranges}
         handleRangeChange={handleRangeChange}
+        handleAxesChange={handleAxesChange}
         renderingMethod={renderingMethod}
         handleRenderingMethodChange={handleRenderingMethodChange}
         handleUpdate={handleUpdate}
