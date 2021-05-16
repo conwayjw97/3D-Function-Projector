@@ -1,20 +1,20 @@
 {
   "files": {
-    "main.css": "/3D-Function-Projector/static/css/main.eb7247b7.chunk.css",
-    "main.js": "/3D-Function-Projector/static/js/main.11c023de.chunk.js",
-    "main.js.map": "/3D-Function-Projector/static/js/main.11c023de.chunk.js.map",
+    "main.css": "/3D-Function-Projector/static/css/main.4a89c5c1.chunk.css",
+    "main.js": "/3D-Function-Projector/static/js/main.1243af9d.chunk.js",
+    "main.js.map": "/3D-Function-Projector/static/js/main.1243af9d.chunk.js.map",
     "runtime-main.js": "/3D-Function-Projector/static/js/runtime-main.0956123f.js",
     "runtime-main.js.map": "/3D-Function-Projector/static/js/runtime-main.0956123f.js.map",
     "static/js/2.b47e42ef.chunk.js": "/3D-Function-Projector/static/js/2.b47e42ef.chunk.js",
     "static/js/2.b47e42ef.chunk.js.map": "/3D-Function-Projector/static/js/2.b47e42ef.chunk.js.map",
     "index.html": "/3D-Function-Projector/index.html",
-    "static/css/main.eb7247b7.chunk.css.map": "/3D-Function-Projector/static/css/main.eb7247b7.chunk.css.map",
+    "static/css/main.4a89c5c1.chunk.css.map": "/3D-Function-Projector/static/css/main.4a89c5c1.chunk.css.map",
     "static/js/2.b47e42ef.chunk.js.LICENSE.txt": "/3D-Function-Projector/static/js/2.b47e42ef.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.0956123f.js",
     "static/js/2.b47e42ef.chunk.js",
-    "static/css/main.eb7247b7.chunk.css",
-    "static/js/main.11c023de.chunk.js"
+    "static/css/main.4a89c5c1.chunk.css",
+    "static/js/main.1243af9d.chunk.js"
   ]
 }
