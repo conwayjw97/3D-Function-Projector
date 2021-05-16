@@ -54,7 +54,7 @@ export default class Graphics{
     animate();
   }
 
-  updateProjection(expression, detail, ranges, renderingMethod){
+  async updateProjection(expression, detail, ranges, renderingMethod){
     if(this.expression !== expression || this.detail !== detail || this.ranges !== ranges || this.renderingMethod !== renderingMethod){
       this.expression = expression;
       this.detail = detail;

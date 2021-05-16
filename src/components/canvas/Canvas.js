@@ -18,27 +18,26 @@ function Canvas(props) {
 
   useEffect(() => {
     setLoading(true);
-
     const graphics = new Graphics(canvas.current, width, height, props.expression, props.detail, props.ranges, props.renderingMethod);
+    setLoading(false);
 
-    const updateProjection = (expression, detail, ranges, renderingFeatures) => {
-      graphics.updateProjection(expression, detail, ranges, renderingFeatures);
+    const updateProjection = async (expression, detail, ranges, renderingFeatures) => {
+      setLoading(true);
+      console.log(1);
+      await graphics.updateProjection(expression, detail, ranges, renderingFeatures);
+      setLoading(false);
+      console.log(2);
     }
 
     graphicsControls.current = {updateProjection};
-
-    setLoading(false);
   }, []);
 
   useEffect(() => {
-    setLoading(true);
-
     graphicsControls.current.updateProjection(props.expression, props.detail, props.ranges, props.renderingMethod);
-
-    setLoading(false);
   }, [props.detail, props.renderingMethod, props.updateCount]);
 
   const getLoadingMessage = () => {
+    console.log(loading)
     if(loading){
       return (
         <div style={{position: "absolute", top: "50%", left: "50%", pointerEvents: "none", margin: "auto", color: "rgb(255, 255, 255)", font: "60px Consolas", transform: "translate(-50%, -50%)"}}>

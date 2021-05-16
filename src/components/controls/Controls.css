@@ -159,3 +159,7 @@ button:hover {
 .large-print {
   font: 25px Consolas;
 }
+
+.small-left-margin {
+  margin-left: 0.25em;
+}

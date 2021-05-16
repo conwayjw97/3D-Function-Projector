@@ -22,7 +22,7 @@ function Controls(props) {
       </label>
       <label className="centered">
           Z =
-          <input type="text" id="expression" style={{marginLeft: "0.25em"}} value={props.expression} onChange={props.handleExpressionChange} />
+          <input className="small-left-margin" type="text" id="expression" value={props.expression} onChange={props.handleExpressionChange} />
       </label>
       <label className="centered">
         X Range:[
@@ -54,7 +54,7 @@ function Controls(props) {
       </label>
       <label className="centered">
           Render Method:
-          <select id="render-method-dropdown" value={props.renderingMethod} style={{marginLeft: "0.25em"}} onChange={handleRenderingMethodChange}>
+          <select className="small-left-margin" id="render-method-dropdown" value={props.renderingMethod} onChange={handleRenderingMethodChange}>
             <option value="vertices">Vertices</option>
             <option value="edges">Edges</option>
             <option value="faces">Faces</option>
